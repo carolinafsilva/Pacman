@@ -1,6 +1,6 @@
 # Pacman
 
-Pacman game implementation using C++ and openGL.
+Pacman game implementation using C++ and OpenGL.
 
 ## Getting Started
 
