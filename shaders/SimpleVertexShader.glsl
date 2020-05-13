@@ -4,8 +4,10 @@
 // Input vertex data and color data
 layout(location = 0) in vec3 vertexPosition;
 
+uniform mat4 mvp;
+
 void main()
 {
 	// position of each vertex in homogeneous coordinates
-	gl_Position = vec4(vertexPosition, 1.0);
+	gl_Position = mvp * vec4(vertexPosition, 1.0);
 }
