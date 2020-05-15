@@ -1,5 +1,6 @@
 # Pacman Project
 build/
+dist/
 
 # Prerequisites
 *.d

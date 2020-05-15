@@ -5,34 +5,28 @@ CC := c++
 LIBS := -lstdc++ -lm -framework OpenGL -lglfw -lglew
 
 SRCS := $(filter-out src/main.cpp, $(wildcard src/*.cpp))
-OBJS := $(SRCS:src/%.cpp=build/objects/%.o)
+OBJS := $(SRCS:src/%.cpp=build/%.o)
 
-all: build build/assets build/shaders/ build/objects build/pacman update
+all: build dist dist/pacman update
 
 build:
 	mkdir build
 
-build/assets:
-	mkdir build/assets
-
-build/shaders:
-	mkdir build/shaders
-
-build/objects:
-	mkdir -p build/objects
-
-build/objects/%.o: src/%.cpp
+build/%.o: src/%.cpp
 	$(CC) -c $< -o $@
 
-build/pacman: src/main.cpp $(OBJS)
+dist:
+	mkdir dist
+
+dist/pacman: src/main.cpp $(OBJS)
 	$(CC) $^ -o $@ $(LIBS)
 
 update:
-	rsync -rt src/assets build/
-	rsync -rt src/shaders build/
+	rsync -rt src/shaders dist
+	rsync -rt src/assets dist
 
 run:
-	cd build && ./pacman
+	cd dist && ./pacman
 
 clean:
-	rm -rvf build
+	rm -rvf build dist
