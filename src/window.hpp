@@ -20,9 +20,6 @@ class Window {
   GLuint shaderProgram;
   unsigned int VBO, Maze_VAO, Pacman_VAO, EBO;
 
-  unsigned int SCR_WIDTH;
-  unsigned int SCR_HEIGHT;
-
   void transferPacman();
   void transferMaze();
 
@@ -34,6 +31,8 @@ class Window {
   static void processInput(GLFWwindow *window);
 
  public:
+  GLFWwindow *getWindow();
+
   void initialize();
   void transferDataToGPUMemory();
   void render();

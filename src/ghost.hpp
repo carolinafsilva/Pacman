@@ -34,13 +34,13 @@ class Blinky : public Ghost {
  public:
   void increaseIgnoreScatterLimit();
 
-  Blinky();
+  Blinky(Pacman *pacman);
 };
 
 class Pinky : public Ghost {
  private:
  public:
-  Pinky();
+  Pinky(Pacman *pacman);
 };
 
 class Inky : public Ghost {
@@ -48,7 +48,7 @@ class Inky : public Ghost {
   Blinky *blinky;
 
  public:
-  Inky();
+  Inky(Pacman *pacman, Blinky *blinky);
 };
 
 class Clyde : public Ghost {
@@ -58,7 +58,7 @@ class Clyde : public Ghost {
   void updateDistanceToPacman();
 
  public:
-  Clyde();
+  Clyde(Pacman *pacman);
 };
 
 #endif

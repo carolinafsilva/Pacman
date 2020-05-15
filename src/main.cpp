@@ -1,11 +1,9 @@
-#include "window.hpp"
+#include "game.hpp"
 
 int main() {
-  Window win = Window();
-  win.initialize();
-  win.transferDataToGPUMemory();
-  win.render();
-  win.deleteDataFromGPUMemory();
-  win.terminate();
+  Game* game = new Game();
+  game->setup();
+  game->run();
+  game->clean();
   return 0;
 }
