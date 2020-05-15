@@ -1,63 +1,63 @@
 #ifndef GHOST_H
 #define GHOST_H
 
+#include "maze.hpp"
 #include "pacman.hpp"
 
 enum behaviour { scatter, chase, frightened, eaten };
 
 class Ghost {
  protected:
-  position pos;
-  position target;
+  Pacman *pacman;
+
+  coords position;
+  coords target;
 
   behaviour mode;
 
+  void setPosition(coords position);
+  void setTarget(coords target);
+
  public:
-  position getPosition();
+  coords getPosition();
 
   void setMode(behaviour mode);
-  void setPosition(position pos);
-  void setTarget(position target);
+  void move();
 
-  Ghost();
+  Ghost(Pacman *pacman);
 };
 
 class Blinky : public Ghost {
  private:
-  Pacman *pacman;
-
   int ignoreScatterLimit;
 
  public:
-  void move();
   void increaseIgnoreScatterLimit();
+
   Blinky();
 };
 
 class Pinky : public Ghost {
  private:
-  Pacman *pacman;
-
  public:
-  void move();
   Pinky();
 };
 
 class Inky : public Ghost {
  private:
-  Pacman *pacman;
+  Blinky *blinky;
 
  public:
-  void move();
   Inky();
 };
 
 class Clyde : public Ghost {
  private:
-  Pacman *pacman;
+  int distanceToPacman;
+
+  void updateDistanceToPacman();
 
  public:
-  void move();
   Clyde();
 };
 

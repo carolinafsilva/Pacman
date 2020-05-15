@@ -1,20 +1,23 @@
 #ifndef PACMAN_H
 #define PACMAN_H
 
-struct position {
-  int x;
-  int y;
-};
+#include "maze.hpp"
+
+enum orientation { left, down, up, right };
 
 class Pacman {
  private:
-  position pos;
+  orientation direction;
+  coords position;
+
   int lives;
 
  public:
-  position getPosition();
+  orientation getOrientation();
+  coords getPosition();
+  int getLives();
 
-  void setPosition(position pos);
+  void setPosition(coords position);
 
   Pacman();
 };
