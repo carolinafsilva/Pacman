@@ -1,23 +1,15 @@
-#include <algorithm>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <stdio.h>
-#include <string>
-#include <vector>
-
-using namespace std;
-
-#include <stdlib.h>
-#include <string.h>
+#include "shader.hpp"
 
 #include <GL/glew.h>
 
-#include "shader.h"
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <vector>
 
 GLuint LoadShaders(const char *vertex_file_path,
                    const char *fragment_file_path) {
-
   // Create the shaders
   GLuint VertexShaderID = glCreateShader(GL_VERTEX_SHADER);
   GLuint FragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
@@ -31,9 +23,10 @@ GLuint LoadShaders(const char *vertex_file_path,
     VertexShaderCode = sstr.str();
     VertexShaderStream.close();
   } else {
-    printf("Impossible to open %s. Are you in the right directory ? Don't "
-           "forget to read the FAQ !\n",
-           vertex_file_path);
+    printf(
+        "Impossible to open %s. Are you in the right directory ? Don't forget "
+        "to read the FAQ !\n",
+        vertex_file_path);
     getchar();
     return 0;
   }
