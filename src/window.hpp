@@ -1,15 +1,10 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <iostream>
-
+#include "opengl.hpp"
 #include "shader.hpp"
+
+#include <iostream>
 
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
