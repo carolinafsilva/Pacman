@@ -1,5 +1,7 @@
 #include "window.hpp"
 
+GLFWwindow *Window::getWindow() { return this->window; }
+
 void Window::transferPacman() {
   // Variable definition
   float step = 0.045f;
@@ -391,14 +393,6 @@ void Window::drawMaze() {
   glDrawElements(GL_TRIANGLES, 420, GL_UNSIGNED_INT, 0);
 }
 
-// process all input: query GLFW whether relevant keys are pressed/released
-// this frame and react accordingly
-// ---------------------------------------------------------------------------------------------------------
-void Window::processInput(GLFWwindow *window) {
-  if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    glfwSetWindowShouldClose(window, true);
-}
-
 // glfw: whenever the window size changed (by OS or user resize) this callback
 // function executes
 // ---------------------------------------------------------------------------------------------
@@ -424,7 +418,7 @@ void Window::initialize() {
 
   // glfw window creation
   // --------------------
-  window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Pacman", NULL, NULL);
+  window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Pacman", NULL, NULL);
   if (window == NULL) {
     std::cout << "Failed to create GLFW window" << std::endl;
     glfwTerminate();
@@ -440,6 +434,8 @@ void Window::initialize() {
     glfwTerminate();
     exit(1);
   }
+
+  glClearColor(0.2f, 0.3f, 0.2f, 1.0f);
 }
 
 void Window::transferDataToGPUMemory() {
@@ -453,29 +449,21 @@ void Window::transferDataToGPUMemory() {
 }
 
 void Window::render() {
-  glClearColor(0.2f, 0.3f, 0.2f, 1.0f);
+  // Clean window
+  glClear(GL_COLOR_BUFFER_BIT);
 
-  do {
-    // the entire color buffer will be filled with the color as configured by
-    // glClearColor
-    glClear(GL_COLOR_BUFFER_BIT);
+  // Draw Game
+  glViewport(0, 0, SCREEN_WIDTH * 2 / 3, SCREEN_HEIGHT);
+  drawMaze();
 
-    // Draw Game
-    glViewport(0, 0, SCR_WIDTH * 2 / 3, SCR_HEIGHT);
-    drawMaze();
+  // Draw Sidebar
+  glViewport(SCREEN_WIDTH * 2 / 3, 0, SCREEN_WIDTH * 1 / 3, SCREEN_HEIGHT);
+  drawPacman();
+  // drawSidebar();
 
-    // Draw Sidebar
-    glViewport(SCR_WIDTH * 2 / 3, 0, SCR_WIDTH * 1 / 3, SCR_HEIGHT);
-    drawPacman();
-    // drawSidebar();
-
-    // swap the color buffer
-    glfwSwapBuffers(window);
-    glfwPollEvents();
-
-  }  // Check if the ESC key was pressed or the window was closed
-  while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-         !glfwWindowShouldClose(window));
+  // swap the color buffer
+  glfwSwapBuffers(window);
+  glfwPollEvents();
 }
 
 void Window::deleteDataFromGPUMemory() {
@@ -489,7 +477,4 @@ void Window::deleteDataFromGPUMemory() {
 
 void Window::terminate() { glfwTerminate(); }
 
-Window::Window() {
-  this->SCR_WIDTH = SCREEN_WIDTH;
-  this->SCR_HEIGHT = SCREEN_HEIGHT;
-};
+Window::Window() {}

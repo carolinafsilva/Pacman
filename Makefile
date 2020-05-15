@@ -2,7 +2,7 @@
 
 CC := c++
 
-LIBS := -lstdc++ -lm -framework OpenGL -lglfw -lglew
+LIBS := -lstdc++ -lm -lglfw -lglew -framework OpenGL
 
 SRCS := $(filter-out src/main.cpp, $(wildcard src/*.cpp))
 OBJS := $(SRCS:src/%.cpp=build/%.o)
