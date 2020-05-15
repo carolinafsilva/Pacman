@@ -11,14 +11,17 @@
 
 #include "shader.hpp"
 
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+
 class Window {
  private:
   GLFWwindow *window;
   GLuint shaderProgram;
   unsigned int VBO, Maze_VAO, Pacman_VAO, EBO;
 
-  const unsigned int SCR_WIDTH = 800;
-  const unsigned int SCR_HEIGHT = 600;
+  unsigned int SCR_WIDTH;
+  unsigned int SCR_HEIGHT;
 
   void transferPacman();
   void transferMaze();

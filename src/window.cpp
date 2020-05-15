@@ -489,4 +489,7 @@ void Window::deleteDataFromGPUMemory() {
 
 void Window::terminate() { glfwTerminate(); }
 
-Window::Window(){};
+Window::Window() {
+  this->SCR_WIDTH = SCREEN_WIDTH;
+  this->SCR_HEIGHT = SCREEN_HEIGHT;
+};
