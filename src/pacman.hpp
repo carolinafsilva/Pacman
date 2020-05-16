@@ -3,12 +3,13 @@
 
 #include "maze.hpp"
 
-enum orientation { left, down, up, right };
+enum orientation { up, left, down, right };
 
 class Pacman {
  private:
   orientation direction;
-  coords position;
+
+  coords *position;
 
   int lives;
 
@@ -18,6 +19,7 @@ class Pacman {
   int getLives();
 
   void setPosition(coords position);
+  void die();
 
   Pacman();
 };

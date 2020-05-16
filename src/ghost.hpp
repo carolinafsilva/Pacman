@@ -10,8 +10,9 @@ class Ghost {
  protected:
   Pacman *pacman;
 
-  coords position;
-  coords target;
+  coords *position;
+  coords *home;
+  coords *target;
 
   behaviour mode;
 
@@ -29,11 +30,10 @@ class Ghost {
 
 class Blinky : public Ghost {
  private:
-  int ignoreScatterLimit;
+  int ignoreScatter[19] = {20, 30, 40, 40, 40,  50,  50,  50,  60, 60,
+                           60, 80, 80, 80, 100, 100, 100, 100, 120};
 
  public:
-  void increaseIgnoreScatterLimit();
-
   Blinky(Pacman *pacman);
 };
 
