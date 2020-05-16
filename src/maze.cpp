@@ -1,6 +1,19 @@
 #include "maze.hpp"
 
-Maze::Maze() {}
+Maze::Maze() { this->numberOfDotsRemaining = 240; }
+
+bool Maze::valid(int x, int y) {
+  if (x >= 0 && x < BOARD_X && y >= 0 && y < BOARD_Y) {
+    return this->matrix[x][y] != -1;
+  }
+  return false;
+}
+
+void Maze::zeroPosition(int x, int y) {
+  if (valid(x, y)) {
+    this->matrix[x][y] = 0;
+  }
+}
 
 void Maze::debugMatrix() {
   printf("\n");

@@ -82,6 +82,8 @@ class Maze {
  public:
   bool valid(int x, int y);
 
+  void zeroPosition(int x, int y);
+
   void debugMatrix();
 
   Maze();
