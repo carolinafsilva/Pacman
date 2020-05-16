@@ -2,6 +2,7 @@
 
 CC := c++
 
+CFLAGS := -std=c++11 -O2
 LIBS := -lstdc++ -lm -lglfw -lglew -framework OpenGL
 
 SRCS := $(filter-out src/main.cpp, $(wildcard src/*.cpp))
@@ -13,13 +14,13 @@ build:
 	mkdir build
 
 build/%.o: src/%.cpp
-	$(CC) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 dist:
 	mkdir dist
 
 dist/pacman: src/main.cpp $(OBJS)
-	$(CC) $^ -o $@ $(LIBS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LIBS)
 
 update:
 	rsync -rt src/shaders dist
