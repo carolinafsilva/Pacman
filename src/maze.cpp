@@ -46,6 +46,9 @@ void Maze::debugMatrix() {
       if (this->matrix[i][j] == -1) {
         printf("\033[0;34m%3d\033[0m", this->matrix[i][j]);
       }
+      if (this->matrix[i][j] == -2) {
+        printf("\033[0;33m%3d\033[0m", this->matrix[i][j]);
+      }
       if (this->matrix[i][j] == 0 || this->matrix[i][j] == 10) {
         printf("\033[0;32m%3d\033[0m", this->matrix[i][j]);
       }
