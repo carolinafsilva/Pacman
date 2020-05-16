@@ -1,17 +1,41 @@
 #include "maze.hpp"
 
-Maze::Maze() { this->numberOfDotsRemaining = 240; }
+coords *positionUp(coords *position) {
+  coords *up = (coords *)malloc(sizeof(coords));
+  up->x = position->x;
+  up->y = position->y - 1;
+  return up;
+}
+coords *positionLeft(coords *position) {
+  coords *left = (coords *)malloc(sizeof(coords));
+  left->x = position->x - 1;
+  left->y = position->y;
+  return left;
+}
+coords *positionDown(coords *position) {
+  coords *down = (coords *)malloc(sizeof(coords));
+  down->x = position->x;
+  down->y = position->y + 1;
+  return down;
+}
+coords *positionRight(coords *position) {
+  coords *right = (coords *)malloc(sizeof(coords));
+  right->x = position->x + 1;
+  right->y = position->y;
+  return right;
+}
 
-bool Maze::valid(int x, int y) {
-  if (x >= 0 && x < BOARD_X && y >= 0 && y < BOARD_Y) {
-    return this->matrix[x][y] != -1;
+bool Maze::valid(coords *position) {
+  if (position->x >= 0 && position->x < BOARD_X && position->y >= 0 &&
+      position->y < BOARD_Y) {
+    return this->matrix[position->x][position->y] != -1;
   }
   return false;
 }
 
-void Maze::zeroPosition(int x, int y) {
-  if (valid(x, y)) {
-    this->matrix[x][y] = 0;
+void Maze::zeroPosition(coords *position) {
+  if (valid(position)) {
+    this->matrix[position->x][position->y] = 0;
   }
 }
 
@@ -33,3 +57,5 @@ void Maze::debugMatrix() {
   }
   printf("\n");
 }
+
+Maze::Maze() { this->numberOfDotsRemaining = 240; }

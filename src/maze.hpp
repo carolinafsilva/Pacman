@@ -11,6 +11,11 @@ struct coords {
   int y;
 };
 
+coords *positionUp(coords *position);
+coords *positionLeft(coords *position);
+coords *positionDown(coords *position);
+coords *positionRight(coords *position);
+
 class Maze {
  private:
   int matrix[BOARD_X][BOARD_Y] = {
@@ -80,9 +85,9 @@ class Maze {
   int numberOfDotsRemaining;
 
  public:
-  bool valid(int x, int y);
+  bool valid(coords *position);
 
-  void zeroPosition(int x, int y);
+  void zeroPosition(coords *position);
 
   void debugMatrix();
 
