@@ -2,7 +2,16 @@
 
 Ghost::Ghost(Pacman *pacman) {
   this->pacman = pacman;
+  this->position = (coords *)malloc(sizeof(coords));
+  this->target = (coords *)malloc(sizeof(coords));
+  this->home = (coords *)malloc(sizeof(coords));
   this->mode = scatter;
+}
+
+Ghost::~Ghost() {
+  free(this->position);
+  free(this->target);
+  free(this->home);
 }
 
 Blinky::Blinky(Pacman *pacman) : Ghost(pacman) {

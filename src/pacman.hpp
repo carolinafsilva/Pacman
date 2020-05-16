@@ -22,6 +22,7 @@ class Pacman {
   void die();
 
   Pacman();
+  ~Pacman();
 };
 
 #endif

@@ -11,8 +11,8 @@ class Ghost {
   Pacman *pacman;
 
   coords *position;
-  coords *home;
   coords *target;
+  coords *home;
 
   behaviour mode;
 
@@ -26,6 +26,7 @@ class Ghost {
   void move();
 
   Ghost(Pacman *pacman);
+  ~Ghost();
 };
 
 class Blinky : public Ghost {
