@@ -24,6 +24,8 @@ void Game::clean() {
   window->terminate();
 }
 
+void Game::debugMatrix() { this->maze->debugMatrix(); }
+
 Game::Game() {
   this->window = new Window();
 

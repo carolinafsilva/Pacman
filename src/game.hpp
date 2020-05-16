@@ -24,6 +24,8 @@ class Game {
   void run();
   void clean();
 
+  void debugMatrix();
+
   Game();
 };
 
