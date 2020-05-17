@@ -449,11 +449,15 @@ void Window::transferDataToGPUMemory() {
 }
 
 void Window::render() {
+  // MacOS retina screen fix
+  int width, height;
+  glfwGetFramebufferSize(window, &width, &height);
+
   // Clean window
   glClear(GL_COLOR_BUFFER_BIT);
 
   // Draw Game
-  glViewport(0, 0, SCREEN_WIDTH * 2 / 3, SCREEN_HEIGHT);
+  glViewport(0, 0, width * 2 / 3, height);
   drawMaze();
 
   // Draw Sidebar
