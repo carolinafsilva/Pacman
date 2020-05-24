@@ -3,9 +3,6 @@
 
 #include "opengl.hpp"
 #include "shader.hpp"
-#include "resource_manager.h"
-#include "sprite_sheet_renderer.h"
-#include "texture.h"
 
 #include <iostream>
 
@@ -16,7 +13,6 @@ class Window {
  private:
   GLFWwindow *window;
   GLuint shaderProgram;
-  SpriteSheetRenderer *SheetRenderer;
   unsigned int VBO, Maze_VAO, Pacman_VAO, EBO;
 
   void transferPacman();
