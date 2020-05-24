@@ -14,7 +14,7 @@
 #include <map>
 #include <string>
 
-#include "shader.h"
+#include "shader.hpp"
 #include "texture.h"
 
 // A static singleton ResourceManager class that hosts several
