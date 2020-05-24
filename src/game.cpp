@@ -10,7 +10,7 @@ void Game::setup() {
 void Game::run() {
   do {
     // process input
-
+    processInput(window);
     // game logic
 
     // render
