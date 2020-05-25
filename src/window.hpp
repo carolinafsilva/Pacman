@@ -3,7 +3,7 @@
 
 #include "opengl.hpp"
 #include "shader.hpp"
-#include "resource_manager.h"
+#include "resource_manager.hpp"
 #include "sprite_sheet_renderer.hpp"
 
 #include <iostream>

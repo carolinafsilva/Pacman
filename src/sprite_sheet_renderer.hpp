@@ -15,7 +15,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "shader.hpp"
-#include "texture.h"
+#include "texture.hpp"
 
 class SpriteSheetRenderer {
  public:
