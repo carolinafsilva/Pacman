@@ -12,3 +12,8 @@ Pacman::Pacman() {
 }
 
 Pacman::~Pacman() { free(this->position); }
+
+void Pacman::setOrientation(orientation direction) {
+  // if(Maze.)
+  // this->direction = direction;
+}

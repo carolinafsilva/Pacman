@@ -19,6 +19,7 @@ class Pacman {
   int getLives();
 
   void setPosition(coords position);
+  void setOrientation(orientation direction = left);
   void die();
 
   Pacman();

@@ -39,6 +39,8 @@ void Maze::zeroPosition(coords *position) {
   }
 }
 
+void Maze::setPacmanPosition(coords *position) {}
+
 void Maze::debugMatrix() {
   printf("\n");
   for (int i = 0; i < 31; i++) {

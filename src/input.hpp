@@ -3,8 +3,9 @@
 
 #include "opengl.hpp"
 #include "window.hpp"
+#include "pacman.hpp"
 
-void processInput(Window *window);
+void processInput(Window *window, Pacman *pacman);
 
 bool processExit(Window *window);
 

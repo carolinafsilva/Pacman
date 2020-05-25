@@ -89,6 +89,8 @@ class Maze {
 
   void zeroPosition(coords *position);
 
+  void setPacmanPosition(coords *position);
+
   void debugMatrix();
 
   Maze();
