@@ -3,36 +3,8 @@
 GLFWwindow *Window::getWindow() { return this->window; }
 
 void Window::transferPacman() {
-  // Variable definition
-  float step = 0.045f;
-  float cx = 13.5f, cy = 8.5f;
-  float radius = 1.0f;
-  float theta_s = 0.0f;
-  float theta_e = 360.0f;
-  int size = (int)((theta_e - theta_s) / step) * 2;
-
-  float vertices[size];
-  for (int i = 0; i < size; i++) {
-    vertices[i++] = cx + radius * cosf(theta_s);
-    vertices[i] = cy + radius * sinf(theta_s);
-    // g_vertex_buffer_data[i] = 0.0f;
-    theta_s += step;
-  }
-
-  glGenVertexArrays(1, &Pacman_VAO);
-  glGenBuffers(1, &VBO);
-
-  glBindVertexArray(Pacman_VAO);
-
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
-  glEnableVertexAttribArray(0);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  glBindVertexArray(0);
+  ResourceManager::LoadTexture("assets/images/Pacman_start.png", true,
+                               "pacman");
 }
 
 void Window::transferMaze() {
@@ -368,17 +340,11 @@ void Window::transferMaze() {
 }
 
 void Window::drawPacman() {
-  glUseProgram(shaderProgram);
-
-  glm::mat4 mvp = glm::ortho(0.0f, 28.0f, 0.0f, 31.0f);
-
-  unsigned int matrix = glGetUniformLocation(shaderProgram, "mvp");
-  glUniformMatrix4fv(matrix, 1, GL_FALSE, &mvp[0][0]);
-
-  glBindVertexArray(Pacman_VAO);
-
-  glDrawElements(GL_TRIANGLES, 420, GL_UNSIGNED_INT, 0);
-  // glBindVertexArray(0); // no need to unbind it every time
+  Texture2D myTexture;
+  myTexture = ResourceManager::GetTexture("pacman");
+  SheetRenderer->DrawSprite(myTexture, glm::vec2(100, 100),
+                            glm::vec2(17.0f, 17.0f), 0.0f,
+                            glm::vec3(1.0f, 1.0f, 1.0f), 1, 0);
 }
 
 void Window::drawMaze() {
@@ -431,7 +397,7 @@ void Window::initialize() {
     exit(1);
   }
 
-  glClearColor(0.2f, 0.3f, 0.2f, 1.0f);
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void Window::transferDataToGPUMemory() {
@@ -454,7 +420,7 @@ void Window::transferDataToGPUMemory() {
   // set up vertex data (and buffer(s)) and configure vertex attributes
   // ------------------------------------------------------------------
   transferMaze();
-  // transferPacman();
+  transferPacman();
 }
 
 void Window::render() {
@@ -466,11 +432,8 @@ void Window::render() {
   glClear(GL_COLOR_BUFFER_BIT);
 
   // Draw Game
-  glViewport(0, 0, width * 2 / 3, height);
+  // glViewport(0, 0, width * 2 / 3, height);
   drawMaze();
-
-  // Draw Sidebar
-  glViewport(SCREEN_WIDTH * 2 / 3, 0, SCREEN_WIDTH * 1 / 3, SCREEN_HEIGHT);
   drawPacman();
   // drawSidebar();
 
