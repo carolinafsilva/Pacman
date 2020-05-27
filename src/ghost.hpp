@@ -10,6 +10,7 @@ enum behaviour { scatter, chase, frightened, eaten };
 class Ghost {
  protected:
   Pacman *pacman;
+  Maze *maze;
 
   glm::vec3 position;
   glm::vec2 target;
@@ -17,16 +18,16 @@ class Ghost {
 
   static behaviour mode;
 
-  void setTarget(glm::vec3 target);
+  void setTarget(glm::vec2 target);
 
  public:
   static void setMode(behaviour mode);
 
   glm::vec3 getPosition();
 
-  void updatePosition();
+  void updatePosition(float delta);
 
-  Ghost(Pacman *pacman);
+  Ghost(Pacman *pacman, Maze *maze);
   ~Ghost();
 };
 
@@ -35,22 +36,34 @@ class Blinky : public Ghost {
   int ignoreScatter[19] = {20, 30, 40, 40, 40,  50,  50,  50,  60, 60,
                            60, 80, 80, 80, 100, 100, 100, 100, 120};
 
+  void setTarget(glm::vec2 target);
+
  public:
-  Blinky(Pacman *pacman);
+  Blinky(Pacman *pacman, Maze *maze);
+
+  void updatePosition(float delta);
 };
 
 class Pinky : public Ghost {
  private:
+  void setTarget(glm::vec2 target);
+
  public:
-  Pinky(Pacman *pacman);
+  Pinky(Pacman *pacman, Maze *maze);
+
+  void updatePosition(float delta);
 };
 
 class Inky : public Ghost {
  private:
   Blinky *blinky;
 
+  void setTarget(glm::vec2 target);
+
  public:
-  Inky(Pacman *pacman, Blinky *blinky);
+  Inky(Pacman *pacman, Maze *maze, Blinky *blinky);
+
+  void updatePosition(float delta);
 };
 
 class Clyde : public Ghost {
@@ -59,8 +72,12 @@ class Clyde : public Ghost {
 
   void updateDistanceToPacman();
 
+  void setTarget(glm::vec2 target);
+
  public:
-  Clyde(Pacman *pacman);
+  Clyde(Pacman *pacman, Maze *maze);
+
+  void updatePosition(float delta);
 };
 
 #endif
