@@ -8,8 +8,9 @@ enum orientation { up, left, down, right };
 
 class Pacman {
  private:
-  orientation direction;
+  Maze *maze;
 
+  orientation direction;
   glm::vec3 position;
 
   int lives;
@@ -21,9 +22,9 @@ class Pacman {
 
   void setOrientation(orientation direction = left);
 
-  void updatePosition();
+  void updatePosition(float delta);
 
-  Pacman();
+  Pacman(Maze *maze);
   ~Pacman();
 };
 

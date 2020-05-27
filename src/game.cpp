@@ -34,7 +34,7 @@ Game::Game() {
 
   this->maze = new Maze();
 
-  this->pacman = new Pacman();
+  this->pacman = new Pacman(maze);
 
   this->blinky = new Blinky(this->pacman);
   this->pinky = new Pinky(this->pacman);
