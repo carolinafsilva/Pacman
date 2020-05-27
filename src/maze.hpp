@@ -80,10 +80,10 @@ class Maze {
  public:
   bool valid(glm::vec3 position);
 
-  glm::vec3 Up(glm::vec3 position);
-  glm::vec3 Left(glm::vec3 position);
-  glm::vec3 Down(glm::vec3 position);
-  glm::vec3 Right(glm::vec3 position);
+  glm::vec3 Up(glm::vec3 position, float delta);
+  glm::vec3 Left(glm::vec3 position, float delta);
+  glm::vec3 Down(glm::vec3 position, float delta);
+  glm::vec3 Right(glm::vec3 position, float delta);
 
   void movePacman(glm::vec3 position);
 
