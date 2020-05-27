@@ -11,7 +11,10 @@ void Game::run() {
   do {
     // process input
     processInput(this->window, pacman);
-    // game logic
+
+    // TODO: update positions (pacman + ghosts)
+
+    // TODO: update game state
 
     // render
     window->render();

@@ -12,18 +12,20 @@ class Ghost {
 
   coords *position;
   coords *target;
+  coords *size;
   coords *home;
 
-  behaviour mode;
+  static behaviour mode;
 
   void setPosition(coords position);
   void setTarget(coords target);
 
  public:
-  coords getPosition();
+  static void setMode(behaviour mode);
 
-  void setMode(behaviour mode);
   void move();
+  coords getSize();
+  coords getPosition();
 
   Ghost(Pacman *pacman);
   ~Ghost();

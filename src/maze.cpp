@@ -1,24 +1,24 @@
 #include "maze.hpp"
 
-coords *positionUp(coords *position) {
+coords *Maze::Up(coords *position) {
   coords *up = (coords *)malloc(sizeof(coords));
   up->x = position->x;
   up->y = position->y - 1;
   return up;
 }
-coords *positionLeft(coords *position) {
+coords *Maze::Left(coords *position) {
   coords *left = (coords *)malloc(sizeof(coords));
   left->x = position->x - 1;
   left->y = position->y;
   return left;
 }
-coords *positionDown(coords *position) {
+coords *Maze::Down(coords *position) {
   coords *down = (coords *)malloc(sizeof(coords));
   down->x = position->x;
   down->y = position->y + 1;
   return down;
 }
-coords *positionRight(coords *position) {
+coords *Maze::Right(coords *position) {
   coords *right = (coords *)malloc(sizeof(coords));
   right->x = position->x + 1;
   right->y = position->y;
@@ -33,13 +33,15 @@ bool Maze::valid(coords *position) {
   return false;
 }
 
-void Maze::zeroPosition(coords *position) {
+void Maze::eat(coords *position) {
   if (valid(position)) {
     this->matrix[position->x][position->y] = 0;
   }
 }
 
-void Maze::setPacmanPosition(coords *position) {}
+void Maze::movePacman(coords *position) {}
+
+void Maze::moveGhost(coords *position) {}
 
 void Maze::debugMatrix() {
   printf("\n");

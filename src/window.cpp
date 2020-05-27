@@ -412,8 +412,7 @@ void Window::transferDataToGPUMemory() {
   ResourceManager::GetShader("sprite").SetMatrix4("projection", projection);
 
   // set render-specific controls
-  Shader myShader;
-  myShader = ResourceManager::GetShader("sprite");
+  Shader myShader = ResourceManager::GetShader("sprite");
   SheetRenderer = new SpriteSheetRenderer(myShader);
   // load textures
 

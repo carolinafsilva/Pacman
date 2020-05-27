@@ -5,7 +5,6 @@ Ghost::Ghost(Pacman *pacman) {
   this->position = (coords *)malloc(sizeof(coords));
   this->target = (coords *)malloc(sizeof(coords));
   this->home = (coords *)malloc(sizeof(coords));
-  this->mode = scatter;
 }
 
 Ghost::~Ghost() {
@@ -13,6 +12,32 @@ Ghost::~Ghost() {
   free(this->target);
   free(this->home);
 }
+
+void Ghost::setPosition(coords position) {
+  // TODO: implement
+}
+
+void Ghost::setTarget(coords target) {
+  // TODO: implement
+}
+
+void Ghost::setMode(behaviour mode) {
+  // TODO: implement
+}
+
+void Ghost::move() {
+  // TODO: implement
+}
+
+coords Ghost::getSize() {
+  // TODO: implement
+}
+
+coords Ghost::getPosition() {
+  // TODO: implement
+}
+
+// TODO: add ghosts size to constructors
 
 Blinky::Blinky(Pacman *pacman) : Ghost(pacman) {
   this->position->x = 11;
@@ -42,4 +67,8 @@ Clyde::Clyde(Pacman *pacman) : Ghost(pacman) {
   this->position->y = 13;
   this->home->x = 29;
   this->home->y = 1;
+}
+
+void Clyde::updateDistanceToPacman() {
+  // TODO: implement
 }

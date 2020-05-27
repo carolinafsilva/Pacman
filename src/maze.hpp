@@ -4,17 +4,13 @@
 #define BOARD_X 31
 #define BOARD_Y 28
 
+// #include "ghost.hpp"
 #include <iostream>
 
 struct coords {
   int x;
   int y;
 };
-
-coords *positionUp(coords *position);
-coords *positionLeft(coords *position);
-coords *positionDown(coords *position);
-coords *positionRight(coords *position);
 
 class Maze {
  private:
@@ -84,12 +80,19 @@ class Maze {
 
   int numberOfDotsRemaining;
 
+  void eat(coords *position);
+
  public:
   bool valid(coords *position);
 
-  void zeroPosition(coords *position);
+  coords *Up(coords *position);
+  coords *Left(coords *position);
+  coords *Down(coords *position);
+  coords *Right(coords *position);
 
-  void setPacmanPosition(coords *position);
+  void movePacman(coords *position);
+
+  void moveGhost(coords *position);
 
   void debugMatrix();
 

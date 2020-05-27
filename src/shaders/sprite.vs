@@ -6,7 +6,6 @@ out vec4 TexCoords;
 
 uniform mat4 model;
 uniform mat4 texModel;
-uniform float spriteHeight;
 uniform mat4 projection;
 
 void main()

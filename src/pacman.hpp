@@ -11,15 +11,19 @@ class Pacman {
 
   coords *position;
 
+  coords *size;
+
   int lives;
 
  public:
   orientation getOrientation();
   coords getPosition();
+  coords getSize();
   int getLives();
 
-  void setPosition(coords position);
+  void updatePosition();
   void setOrientation(orientation direction = left);
+
   void die();
 
   Pacman();
