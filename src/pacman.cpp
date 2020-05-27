@@ -2,9 +2,7 @@
 
 Pacman::Pacman() {
   this->direction = left;
-  this->position = glm::vec3(23, 13, 13);  // FIXME: pixel coordinates
-
-  // TODO: add size
+  this->position = glm::vec3(104, 62, 16);
 
   this->lives = 4;
 }
@@ -16,10 +14,6 @@ orientation Pacman::getOrientation() {
 }
 
 glm::vec3 Pacman::getPosition() {
-  // TODO: implement
-}
-
-glm::vec3 Pacman::getSize() {
   // TODO: implement
 }
 

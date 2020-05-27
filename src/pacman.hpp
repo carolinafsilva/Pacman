@@ -12,20 +12,16 @@ class Pacman {
 
   glm::vec3 position;
 
-  glm::vec3 size;
-
   int lives;
 
  public:
   orientation getOrientation();
   glm::vec3 getPosition();
-  glm::vec3 getSize();
   int getLives();
 
-  void updatePosition();
   void setOrientation(orientation direction = left);
 
-  void die();
+  void updatePosition();
 
   Pacman();
   ~Pacman();

@@ -12,21 +12,19 @@ class Ghost {
   Pacman *pacman;
 
   glm::vec3 position;
-  glm::vec3 target;
-  glm::vec3 size;
-  glm::vec3 home;
+  glm::vec2 target;
+  glm::vec2 home;
 
   static behaviour mode;
 
-  void setPosition(glm::vec3 position);
   void setTarget(glm::vec3 target);
 
  public:
   static void setMode(behaviour mode);
 
-  void move();
-  glm::vec3 getSize();
   glm::vec3 getPosition();
+
+  void updatePosition();
 
   Ghost(Pacman *pacman);
   ~Ghost();
