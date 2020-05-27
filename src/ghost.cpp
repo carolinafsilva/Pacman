@@ -1,5 +1,7 @@
 #include "ghost.hpp"
 
+behaviour Ghost::mode = scatter;
+
 Ghost::Ghost(Pacman *pacman, Maze *maze) {
   this->pacman = pacman;
   this->maze = maze;
