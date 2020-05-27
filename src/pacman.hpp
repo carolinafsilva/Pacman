@@ -1,6 +1,7 @@
 #ifndef PACMAN_H
 #define PACMAN_H
 
+#include "opengl.hpp"
 #include "maze.hpp"
 
 enum orientation { up, left, down, right };
@@ -9,16 +10,16 @@ class Pacman {
  private:
   orientation direction;
 
-  coords *position;
+  glm::vec3 position;
 
-  coords *size;
+  glm::vec3 size;
 
   int lives;
 
  public:
   orientation getOrientation();
-  coords getPosition();
-  coords getSize();
+  glm::vec3 getPosition();
+  glm::vec3 getSize();
   int getLives();
 
   void updatePosition();

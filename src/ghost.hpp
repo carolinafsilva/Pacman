@@ -1,6 +1,7 @@
 #ifndef GHOST_H
 #define GHOST_H
 
+#include "opengl.hpp"
 #include "maze.hpp"
 #include "pacman.hpp"
 
@@ -10,22 +11,22 @@ class Ghost {
  protected:
   Pacman *pacman;
 
-  coords *position;
-  coords *target;
-  coords *size;
-  coords *home;
+  glm::vec3 position;
+  glm::vec3 target;
+  glm::vec3 size;
+  glm::vec3 home;
 
   static behaviour mode;
 
-  void setPosition(coords position);
-  void setTarget(coords target);
+  void setPosition(glm::vec3 position);
+  void setTarget(glm::vec3 target);
 
  public:
   static void setMode(behaviour mode);
 
   void move();
-  coords getSize();
-  coords getPosition();
+  glm::vec3 getSize();
+  glm::vec3 getPosition();
 
   Ghost(Pacman *pacman);
   ~Ghost();

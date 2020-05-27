@@ -4,13 +4,8 @@
 #define BOARD_X 31
 #define BOARD_Y 28
 
-// #include "ghost.hpp"
+#include "opengl.hpp"
 #include <iostream>
-
-struct coords {
-  int x;
-  int y;
-};
 
 class Maze {
  private:
@@ -80,19 +75,19 @@ class Maze {
 
   int numberOfDotsRemaining;
 
-  void eat(coords *position);
+  void eat(glm::vec3 position);
 
  public:
-  bool valid(coords *position);
+  bool valid(glm::vec3 position);
 
-  coords *Up(coords *position);
-  coords *Left(coords *position);
-  coords *Down(coords *position);
-  coords *Right(coords *position);
+  glm::vec3 Up(glm::vec3 position);
+  glm::vec3 Left(glm::vec3 position);
+  glm::vec3 Down(glm::vec3 position);
+  glm::vec3 Right(glm::vec3 position);
 
-  void movePacman(coords *position);
+  void movePacman(glm::vec3 position);
 
-  void moveGhost(coords *position);
+  void moveGhost(glm::vec3 position);
 
   void debugMatrix();
 

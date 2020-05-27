@@ -2,28 +2,24 @@
 
 Pacman::Pacman() {
   this->direction = left;
-
-  this->position = (coords *)malloc(sizeof(coords));
-
-  this->position->x = 23;  // FIXME: pixel coordinates
-  this->position->y = 13;  // FIXME: pixel coordinates
+  this->position = glm::vec3(23, 13, 13);  // FIXME: pixel coordinates
 
   // TODO: add size
 
   this->lives = 4;
 }
 
-Pacman::~Pacman() { free(this->position); }
+Pacman::~Pacman() {}
 
 orientation Pacman::getOrientation() {
   // TODO: implement
 }
 
-coords Pacman::getPosition() {
+glm::vec3 Pacman::getPosition() {
   // TODO: implement
 }
 
-coords Pacman::getSize() {
+glm::vec3 Pacman::getSize() {
   // TODO: implement
 }
 
