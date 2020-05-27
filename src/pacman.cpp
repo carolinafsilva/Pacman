@@ -20,27 +20,31 @@ void Pacman::updatePosition(float delta) {
   glm::vec3 nextPosition;
   switch (direction) {
     case left:
-      if (maze->valid(maze->Left(this->position))) {
-        nextPosition = glm::vec3(this->position.x - delta, this->position.y,
-                                 this->position.z);
+      nextPosition = glm::vec3(this->position.x - delta, this->position.y,
+                               this->position.z);
+      if (maze->valid(maze->Left(nextPosition))) {
+        this->position = nextPosition;
       }
       break;
     case right:
-      if (maze->valid(maze->Right(this->position))) {
-        nextPosition = glm::vec3(this->position.x + delta, this->position.y,
-                                 this->position.z);
+      nextPosition = glm::vec3(this->position.x + delta, this->position.y,
+                               this->position.z);
+      if (maze->valid(maze->Right(nextPosition))) {
+        this->position = nextPosition;
       }
       break;
     case up:
-      if (maze->valid(maze->Up(this->position))) {
-        nextPosition = glm::vec3(this->position.x, this->position.y + delta,
-                                 this->position.z);
+      nextPosition = glm::vec3(this->position.x, this->position.y + delta,
+                               this->position.z);
+      if (maze->valid(maze->Up(nextPosition))) {
+        this->position = nextPosition;
       }
       break;
     case down:
-      if (maze->valid(maze->Down(this->position))) {
-        nextPosition = glm::vec3(this->position.x, this->position.y - delta,
-                                 this->position.z);
+      nextPosition = glm::vec3(this->position.x, this->position.y - delta,
+                               this->position.z);
+      if (maze->valid(maze->Down(nextPosition))) {
+        this->position = nextPosition;
       }
       break;
   }
