@@ -16,7 +16,7 @@ This software requires the following OpenGL libraries to be installed on the sys
 
 ### Compiling & Running
 
-This software comes with a Makefile already configured
+This project comes with a Makefile already configured
 
 Simply run:
 
