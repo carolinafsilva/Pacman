@@ -44,7 +44,7 @@ and then:
 make run
 ```
 
-To start running the game
+to start running the game
 
 ## License
 
