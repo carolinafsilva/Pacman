@@ -19,6 +19,8 @@ class Game {
   Inky *inky;
   Clyde *clide;
 
+  int score;
+
  public:
   void setup();
   void run();

@@ -17,33 +17,33 @@ glm::vec3 Pacman::getPosition() { return this->position; }
 int Pacman::getLives() { return this->lives; }
 
 void Pacman::updatePosition(float delta) {
+  // FIXME: Dont enter walls
+  // Calculate next position
   glm::vec3 nextPosition;
-  switch (direction) {
-    case left:
-      nextPosition = maze->Left(nextPosition, delta);
-      if (maze->valid(nextPosition)) {
-        this->position = nextPosition;
-      }
-      break;
-    case right:
-      nextPosition = maze->Right(nextPosition, delta);
-      if (maze->valid(nextPosition)) {
-        this->position = nextPosition;
-      }
-      break;
+  switch (this->direction) {
     case up:
-      nextPosition = maze->Up(nextPosition, delta);
-      if (maze->valid(nextPosition)) {
-        this->position = nextPosition;
-      }
+      nextPosition = glm::vec3(this->position.x,
+                               this->position.y + this->position.y * delta,
+                               this->position.z);
+      break;
+    case left:
+      nextPosition = glm::vec3(this->position.x - this->position.x * delta,
+                               this->position.y, this->position.z);
       break;
     case down:
-
-      nextPosition = maze->Down(nextPosition, delta);
-      if (maze->valid(nextPosition)) {
-        this->position = nextPosition;
-      }
+      nextPosition = glm::vec3(this->position.x,
+                               this->position.y - this->position.y * delta,
+                               this->position.z);
       break;
+    case right:
+      nextPosition = glm::vec3(this->position.x + this->position.x * delta,
+                               this->position.y, this->position.z);
+      break;
+  }
+  // if next position is valid, move there
+  if (this->maze->valid(
+          this->maze->getBlock(this->maze->getCenter(nextPosition)))) {
+    this->position = nextPosition;
   }
 }
 

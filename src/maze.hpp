@@ -8,6 +8,8 @@
 #include <iostream>
 #include <math.h>
 
+enum orientation { up, left, down, right };
+
 class Maze {
  private:
   int matrix[BLOCK_L][BLOCK_C] = {
@@ -75,17 +77,18 @@ class Maze {
        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
   int numberOfDotsRemaining;
 
-  void eat(glm::vec3 position);
-
  public:
-  bool valid(glm::vec3 position);
-
-  glm::vec2 Up(glm::vec3 position);
-  glm::vec2 Left(glm::vec3 position);
-  glm::vec2 Down(glm::vec3 position);
-  glm::vec2 Right(glm::vec3 position);
-
   glm::vec2 getCenter(glm::vec3 position);
+  glm::ivec2 getBlock(glm::vec2 center);
+
+  glm::ivec2 blockUp(glm::ivec2 block);
+  glm::ivec2 blockLeft(glm::ivec2 block);
+  glm::ivec2 blockDown(glm::ivec2 block);
+  glm::ivec2 blockRight(glm::ivec2 block);
+
+  bool valid(glm::ivec2 block);
+
+  int eat(glm::ivec2 block);
 
   float euclidianDist(glm::vec3 position1, glm::vec3 position2);
 

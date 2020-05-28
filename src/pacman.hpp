@@ -4,8 +4,6 @@
 #include "opengl.hpp"
 #include "maze.hpp"
 
-enum orientation { up, left, down, right };
-
 class Pacman {
  private:
   Maze *maze;

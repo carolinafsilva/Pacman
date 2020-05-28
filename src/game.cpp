@@ -38,4 +38,6 @@ Game::Game() {
   this->pinky = new Pinky(this->pacman, this->maze);
   this->inky = new Inky(this->pacman, this->maze, this->blinky);
   this->clide = new Clyde(this->pacman, this->maze);
+
+  this->score = 0;
 }

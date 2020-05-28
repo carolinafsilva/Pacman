@@ -12,6 +12,8 @@ class Ghost {
   Pacman *pacman;
   Maze *maze;
 
+  orientation direction;
+
   glm::vec3 position;
   glm::vec2 target;
   glm::vec2 home;

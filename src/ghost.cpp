@@ -5,6 +5,7 @@ behaviour Ghost::mode = scatter;
 Ghost::Ghost(Pacman *pacman, Maze *maze) {
   this->pacman = pacman;
   this->maze = maze;
+  this->direction = left;
 }
 
 Ghost::~Ghost() {}
