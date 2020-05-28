@@ -4,33 +4,47 @@ Pacman game implementation using C++ and OpenGL.
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine.
 
 ### Prerequisites
 
-What things you need to install the software and how to install them
+This software requires the following libraries to be installed on the system:
 
-```
-Give examples
-```
+- glfw
+- glew
+- glm
 
-### Installing
+#### Installing with homebrew:
 
-A step by step series of examples that tell you how to get a development env running
+Installing homebrew:
 
-Say what the step will be
-
-```
-Give the example
+```sh
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 ```
 
-And repeat
+Installing libraries:
 
-```
-until finished
+```sh
+brew install glfw glew glm
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
+### Compiling & Running
+
+This software comes with a Makefile already configured
+
+Simply run:
+
+```sh
+make
+```
+
+and then:
+
+```sh
+make run
+```
+
+To start running the game
 
 ## License
 
