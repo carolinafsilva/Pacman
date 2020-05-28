@@ -6,6 +6,7 @@
 
 #include "opengl.hpp"
 #include <iostream>
+#include <math.h>
 
 class Maze {
  private:
@@ -3095,6 +3096,10 @@ class Maze {
   glm::vec3 Left(glm::vec3 position, float delta);
   glm::vec3 Down(glm::vec3 position, float delta);
   glm::vec3 Right(glm::vec3 position, float delta);
+
+  glm::vec2 getCenter(glm::vec3 position);
+
+  float euclidianDist(glm::vec3 position1, glm::vec3 position2);
 
   void movePacman(glm::vec3 position);
 
