@@ -8,25 +8,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-This software requires the following libraries to be installed on the system:
+This software requires the following OpenGL libraries to be installed on the system:
 
 - glfw
 - glew
 - glm
-
-#### Installing with homebrew:
-
-Installing homebrew:
-
-```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-```
-
-Installing libraries:
-
-```sh
-brew install glfw glew glm
-```
 
 ### Compiling & Running
 
