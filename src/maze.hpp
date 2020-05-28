@@ -79,18 +79,18 @@ class Maze {
 
  public:
   glm::vec2 getCenter(glm::vec3 position);
-  glm::ivec2 getBlock(glm::vec2 center);
 
-  glm::ivec2 blockUp(glm::ivec2 block);
-  glm::ivec2 blockLeft(glm::ivec2 block);
-  glm::ivec2 blockDown(glm::ivec2 block);
-  glm::ivec2 blockRight(glm::ivec2 block);
+  glm::ivec2 blockNext(glm::ivec2 block, orientation direction);
 
   bool valid(glm::ivec2 block);
 
   int eat(glm::ivec2 block);
 
-  float euclidianDist(glm::vec3 position1, glm::vec3 position2);
+  float euclidianDist(glm::vec2 position1, glm::vec2 position2);
+
+  glm::vec2 blockToPixel(glm::ivec2 block);
+
+  glm::ivec2 pixelToBlock(glm::vec2 center);
 
   void movePacman(glm::vec3 position);
 

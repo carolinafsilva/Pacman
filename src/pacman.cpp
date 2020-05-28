@@ -22,27 +22,26 @@ void Pacman::updatePosition(float delta) {
   glm::vec3 nextPosition;
   switch (this->direction) {
     case up:
-      nextPosition = glm::vec3(this->position.x,
-                               this->position.y + this->position.y * delta,
+      nextPosition = glm::vec3(this->position.x, this->position.y + delta,
                                this->position.z);
       break;
     case left:
-      nextPosition = glm::vec3(this->position.x - this->position.x * delta,
-                               this->position.y, this->position.z);
+      nextPosition = glm::vec3(this->position.x - delta, this->position.y,
+                               this->position.z);
       break;
     case down:
-      nextPosition = glm::vec3(this->position.x,
-                               this->position.y - this->position.y * delta,
+      nextPosition = glm::vec3(this->position.x, this->position.y - delta,
                                this->position.z);
       break;
     case right:
-      nextPosition = glm::vec3(this->position.x + this->position.x * delta,
-                               this->position.y, this->position.z);
+      nextPosition = glm::vec3(this->position.x + delta, this->position.y,
+                               this->position.z);
       break;
   }
   // if next position is valid, move there
-  if (this->maze->valid(
-          this->maze->getBlock(this->maze->getCenter(nextPosition)))) {
+  glm::vec2 center = this->maze->getCenter(nextPosition);
+  glm::ivec2 block = this->maze->pixelToBlock(center);
+  if (this->maze->valid(block)) {
     this->position = nextPosition;
   }
 }

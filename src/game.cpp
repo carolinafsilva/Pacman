@@ -5,6 +5,7 @@
 void Game::setup() {
   window->initialize();
   window->transferDataToGPUMemory();
+  srand(time(NULL));
 }
 
 void Game::run() {
