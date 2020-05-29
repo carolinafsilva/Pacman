@@ -3,6 +3,7 @@
 
 #include "opengl.hpp"
 #include "shader.hpp"
+#include "maze.hpp"
 #include "pacman.hpp"
 #include "ghost.hpp"
 #include "resource_manager.hpp"
@@ -19,6 +20,7 @@ class Window {
   GLFWwindow *window;
   GLuint shaderProgram;
   Pacman *pacman;
+  Maze *maze;
   std::vector<Ghost *> ghosts;
   SpriteSheetRenderer *SheetRenderer;
   unsigned int VBO, Maze_VAO, Pacman_VAO, EBO;
@@ -40,7 +42,7 @@ class Window {
   void deleteDataFromGPUMemory();
   void terminate();
 
-  Window(Pacman *pacman, std::vector<Ghost *> &ghosts);
+  Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts);
 };
 
 #endif

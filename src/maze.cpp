@@ -51,10 +51,18 @@ bool Maze::isDoor(glm::ivec2 block) {
 }
 
 int Maze::eat(glm::ivec2 block) {
-  int points = 0;
+  int points;
   if (valid(block, false)) {
     points = matrix[block.x][block.y];
     matrix[block.x][block.y] = 0;
+  }
+  return points;
+}
+
+int Maze::value(glm::ivec2 block) {
+  int points;
+  if (valid(block, false)) {
+    points = matrix[block.x][block.y];
   }
   return points;
 }

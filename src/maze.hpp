@@ -88,6 +88,8 @@ class Maze {
 
   int eat(glm::ivec2 block);
 
+  int value(glm::ivec2 block);
+
   float euclidianDist(glm::vec2 position1, glm::vec2 position2);
 
   glm::vec2 blockToPixel(glm::ivec2 block);

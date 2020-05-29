@@ -10,6 +10,9 @@ void Window::transferTextures() {
   ResourceManager::LoadTexture("assets/images/Pinky_left.gif", true, "pinky");
   ResourceManager::LoadTexture("assets/images/Inky_left.gif", true, "inky");
   ResourceManager::LoadTexture("assets/images/Clyde_left.gif", true, "clyde");
+  ResourceManager::LoadTexture("assets/images/foody_food.png", true, "food");
+  ResourceManager::LoadTexture("assets/images/energyzer.png", true,
+                               "energyzer");
 }
 
 void Window::draw(std::string textureName, glm::vec3 position) {
@@ -31,7 +34,7 @@ void Window::drawMaze() {
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
 // function executes
-// ---------------------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 void Window::framebuffer_size_callback(GLFWwindow *window, int width,
                                        int height) {
   // make sure the viewport matches the new window dimensions; note that width
@@ -103,14 +106,33 @@ void Window::render() {
   // Clean window
   glClear(GL_COLOR_BUFFER_BIT);
 
-  // Draw Game
+  // Draw Maze
   drawMaze();
+
+  // Draw Points
+  for (int i = 0; i < BLOCK_L; i++) {
+    for (int j = 0; j < BLOCK_C; j++) {
+      glm::ivec2 block = glm::ivec2(i, j);
+      if (this->maze->value(block) == 10) {
+        glm::vec2 center = this->maze->blockToPixel(block);
+        glm::vec3 position = glm::vec3(center.x, center.y, 2);
+        draw("food", position);
+      }
+      if (this->maze->value(block) == 50) {
+        glm::vec2 center = this->maze->blockToPixel(block);
+        glm::vec3 position = glm::vec3(center.x - 2, center.y - 2, 6);
+        draw("energyzer", position);
+      }
+    }
+  }
+
+  // Draw Pacman
   draw("pacman", this->pacman->getPosition());
 
+  // Draw Ghosts
   for (int i = 0; i < 4; i++) {
     draw(Ghost::personality[i], this->ghosts[i]->getPosition());
   }
-  // draw("blinky", this->ghosts[0]->getPosition());
 
   // swap the color buffer
   glfwSwapBuffers(window);
@@ -128,7 +150,8 @@ void Window::deleteDataFromGPUMemory() {
 
 void Window::terminate() { glfwTerminate(); }
 
-Window::Window(Pacman *pacman, std::vector<Ghost *> &ghosts) {
+Window::Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts) {
+  this->maze = maze;
   this->pacman = pacman;
   this->ghosts = ghosts;
 }

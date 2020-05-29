@@ -43,7 +43,7 @@ Game::Game() {
   this->ghosts.push_back(new Inky(this->pacman, this->maze, this->ghosts[0]));
   this->ghosts.push_back(new Clyde(this->pacman, this->maze));
 
-  this->window = new Window(this->pacman, this->ghosts);
+  this->window = new Window(this->maze, this->pacman, this->ghosts);
 
   this->score = 0;
 }
