@@ -41,23 +41,37 @@ void Pacman::updatePosition(float delta) {
   // if next position is valid, move there
   glm::vec2 center = this->maze->getCenter(this->position);
   glm::ivec2 currentBlock = this->maze->pixelToBlock(center);
-  glm::ivec2 nextBlock = this->maze->blockNext(currentBlock, this->direction);
   glm::vec2 blockCenter = this->maze->blockToPixel(currentBlock);
 
-  bool centered;
+  glm::ivec2 nextBlock = this->maze->blockNext(currentBlock, this->direction);
+
+  bool alligned;
   if (this->direction == left || this->direction == right) {
-    centered = fabs(center.x - blockCenter.x) <= 0.01f;
+    alligned = fabs(center.x - blockCenter.x) <= 0.01f;
   } else {
-    centered = fabs(center.y - blockCenter.y) <= 0.01f;
+    alligned = fabs(center.y - blockCenter.y) <= 0.01f;
   }
-  // bool centered =
+
+  // bool alligned =
   //     fabs(center.x - blockCenter.x + center.y - blockCenter.y) <= 0.01f;
 
-  if (!centered || this->maze->valid(nextBlock)) {
+  if (!alligned || this->maze->valid(nextBlock)) {
     this->position = nextPosition;
   }
 }
 
 void Pacman::setOrientation(orientation direction) {
-  this->direction = direction;
+  glm::vec2 center = this->maze->getCenter(this->position);
+  glm::ivec2 currentBlock = this->maze->pixelToBlock(center);
+  glm::vec2 blockCenter = this->maze->blockToPixel(currentBlock);
+
+  glm::ivec2 nextBlock = this->maze->blockNext(currentBlock, direction);
+
+  bool centered;
+  centered = fabs(center.x - blockCenter.x) <= 0.01f &&
+             fabs(center.y - blockCenter.y) <= 0.01f;
+
+  if (centered && this->maze->valid(nextBlock)) {
+    this->direction = direction;
+  }
 }
