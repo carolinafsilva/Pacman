@@ -128,24 +128,24 @@ Ghost::~Ghost() {}
 
 Blinky::Blinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
   this->position = glm::vec3(104, 84, 16);
-  this->home = glm::vec2(204, 268);
+  this->home = glm::vec2(204, -20);
 }
 
 Pinky::Pinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
   this->position = glm::vec3(104, 104, 16);
-  this->home = glm::vec2(20, 268);
+  this->home = glm::vec2(20, -20);
 }
 
 Inky::Inky(Pacman *pacman, Maze *maze, Ghost *blinky) : Ghost(pacman, maze) {
   this->blinky = (Blinky *)blinky;
   this->position = glm::vec3(88, 104, 16);
-  this->home = glm::vec2(220, -12);
+  this->home = glm::vec2(220, 260);
 }
 
 Clyde::Clyde(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
   this->aroundPacman = false;
   this->position = glm::vec3(120, 104, 16);
-  this->home = glm::vec2(4, -12);
+  this->home = glm::vec2(4, 260);
 }
 
 void Blinky::updateTarget() {
