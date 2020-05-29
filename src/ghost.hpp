@@ -1,8 +1,10 @@
 #ifndef GHOST_H
 #define GHOST_H
 
-#include <limits.h>
 #include <math.h>
+
+#include <limits>
+#include <string>
 
 #include "opengl.hpp"
 #include "maze.hpp"
@@ -12,6 +14,8 @@ enum behaviour { scatter, frightened, chase };
 
 class Ghost {
  protected:
+  std::string name;
+
   Pacman *pacman;
   Maze *maze;
 

@@ -1,6 +1,7 @@
 #include "ghost.hpp"
 
-/**** private methods ****/
+// -----------------------------------------------------------------------------
+// Private methods
 void Ghost::move(float delta) {
   glm::vec3 nextPosition;
   switch (this->direction) {
@@ -35,10 +36,23 @@ void Ghost::move(float delta) {
 
   if (fabs(this->target.x - center.x) <= 0.01f &&
       fabs(this->target.y - center.y) <= 0.01f) {
-    this->isHome = false;
     this->target = this->home;
-    this->direction = right;
+
+    this->isHome = false;
     this->useDoor = false;
+
+    if (this->name.compare("blinky") == 0) {
+      this->direction = right;
+    }
+    if (this->name.compare("pinky") == 0) {
+      this->direction = left;
+    }
+    if (this->name.compare("inky") == 0) {
+      this->direction = right;
+    }
+    if (this->name.compare("clyde") == 0) {
+      this->direction = left;
+    }
   }
 
   // TODO: similar logic for entering house
@@ -134,7 +148,8 @@ bool Ghost::isBelowDoor() {
   return false;
 }
 
-/**** public methods ****/
+// -----------------------------------------------------------------------------
+// Public methods
 void Ghost::setMode(behaviour mode) { Ghost::mode = mode; }
 
 void Ghost::setIsHome(bool isHome) { this->isHome = isHome; }
@@ -147,7 +162,8 @@ void Ghost::setOrientation(orientation direction) {
   this->direction = direction;
 }
 
-/**** constructors ****/
+// -----------------------------------------------------------------------------
+// Constructors
 behaviour Ghost::mode = scatter;
 
 const char *Ghost::personality[4] = {"blinky", "pinky", "inky", "clyde"};
@@ -160,6 +176,7 @@ Ghost::Ghost(Pacman *pacman, Maze *maze) {
 Ghost::~Ghost() {}
 
 Blinky::Blinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
+  this->name = "blinky";
   this->position = glm::vec3(104, 84, 16);
   this->home = glm::vec2(204, -20);
   this->target = this->home;
@@ -169,6 +186,7 @@ Blinky::Blinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
 }
 
 Pinky::Pinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
+  this->name = "pinky";
   this->position = glm::vec3(104, 104, 16);
   this->target = glm::vec2(112, 92);
   this->home = glm::vec2(20, -20);
@@ -178,6 +196,7 @@ Pinky::Pinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
 }
 
 Inky::Inky(Pacman *pacman, Maze *maze, Ghost *blinky) : Ghost(pacman, maze) {
+  this->name = "inky";
   this->blinky = (Blinky *)blinky;
   this->position = glm::vec3(88, 104, 16);
   this->target = glm::vec2(112, 92);
@@ -188,6 +207,7 @@ Inky::Inky(Pacman *pacman, Maze *maze, Ghost *blinky) : Ghost(pacman, maze) {
 }
 
 Clyde::Clyde(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
+  this->name = "clyde";
   this->aroundPacman = true;
   this->position = glm::vec3(120, 104, 16);
   this->target = glm::vec2(112, 92);
@@ -197,6 +217,8 @@ Clyde::Clyde(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
   this->isHome = true;
 }
 
+// -----------------------------------------------------------------------------
+// Private methods
 void Blinky::updateTarget() {
   switch (this->mode) {
     case scatter:
