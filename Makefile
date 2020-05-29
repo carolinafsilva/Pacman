@@ -2,7 +2,7 @@
 
 CC := c++
 
-CFLAGS := -std=c++11 -O2
+CFLAGS := -std=c++11 -O0 -g
 LIBS := -lstdc++ -lm -lglfw -lglew -framework OpenGL
 
 SRCS := $(filter-out src/main.cpp, $(wildcard src/*.cpp))

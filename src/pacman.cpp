@@ -3,7 +3,7 @@
 Pacman::Pacman(Maze *maze) {
   this->maze = maze;
   this->direction = left;
-  this->position = glm::vec3(104, 180, 16);
+  this->position = glm::vec3(104.0f, 180.0f, 16.0f);
 
   this->lives = 4;
 }
@@ -22,7 +22,7 @@ void Pacman::updatePosition(float delta) {
   glm::vec3 nextPosition;
   switch (this->direction) {
     case up:
-      nextPosition = glm::vec3(this->position.x, this->position.y + delta,
+      nextPosition = glm::vec3(this->position.x, this->position.y - delta,
                                this->position.z);
       break;
     case left:
@@ -30,7 +30,7 @@ void Pacman::updatePosition(float delta) {
                                this->position.z);
       break;
     case down:
-      nextPosition = glm::vec3(this->position.x, this->position.y - delta,
+      nextPosition = glm::vec3(this->position.x, this->position.y + delta,
                                this->position.z);
       break;
     case right:
@@ -39,9 +39,21 @@ void Pacman::updatePosition(float delta) {
       break;
   }
   // if next position is valid, move there
-  glm::vec2 center = this->maze->getCenter(nextPosition);
-  glm::ivec2 block = this->maze->pixelToBlock(center);
-  if (this->maze->valid(block)) {
+  glm::vec2 center = this->maze->getCenter(this->position);
+  glm::ivec2 currentBlock = this->maze->pixelToBlock(center);
+  glm::ivec2 nextBlock = this->maze->blockNext(currentBlock, this->direction);
+  glm::vec2 blockCenter = this->maze->blockToPixel(currentBlock);
+
+  bool centered;
+  if (this->direction == left || this->direction == right) {
+    centered = fabs(center.x - blockCenter.x) <= 0.01f;
+  } else {
+    centered = fabs(center.y - blockCenter.y) <= 0.01f;
+  }
+  // bool centered =
+  //     fabs(center.x - blockCenter.x + center.y - blockCenter.y) <= 0.01f;
+
+  if (!centered || this->maze->valid(nextBlock)) {
     this->position = nextPosition;
   }
 }

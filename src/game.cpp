@@ -14,7 +14,11 @@ void Game::run() {
     processInput(this->window, pacman);
 
     // TODO: update positions (pacman + ghosts)
-
+    pacman->updatePosition(1.0f);
+    // for (Ghost *ghost : ghosts) {
+    //   ghost->updatePosition(1.0f);
+    // }
+    ghosts[0]->updatePosition(1.0f);
     // TODO: update game state
 
     // render

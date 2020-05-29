@@ -6,13 +6,13 @@ glm::vec2 Maze::getCenter(glm::vec3 position) {
 
 glm::ivec2 Maze::pixelToBlock(glm::vec2 center) {
   int c = floor(center.x / 8);
-  int l = (BLOCK_L - 1) - floor(center.y / 8);
+  int l = floor(center.y / 8);
   return glm::ivec2(l, c);
 }
 
 glm::vec2 Maze::blockToPixel(glm::ivec2 block) {
   int x = block.y * 8 + 4;
-  int y = (BLOCK_L - 1 - block.x) * 8 + 4;
+  int y = block.x * 8 + 4;
   return glm::vec2(x, y);
 }
 
@@ -20,20 +20,20 @@ glm::ivec2 Maze::blockNext(glm::ivec2 block, orientation direction) {
   int c, l;
   switch (direction) {
     case up:
-      c = block.x;
-      l = block.y - 1;
+      l = block.x - 1;
+      c = block.y;
       break;
     case left:
-      c = block.x - 1;
-      l = block.y;
+      l = block.x;
+      c = block.y - 1;
       break;
     case down:
-      c = block.x;
-      l = block.y + 1;
+      l = block.x + 1;
+      c = block.y;
       break;
     case right:
-      c = block.x + 1;
-      l = block.y;
+      l = block.x;
+      c = block.y + 1;
       break;
   }
   return glm::ivec2(l, c);

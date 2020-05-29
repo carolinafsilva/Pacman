@@ -5,7 +5,7 @@ void Ghost::move(float delta) {
   glm::vec3 nextPosition;
   switch (this->direction) {
     case up:
-      nextPosition = glm::vec3(this->position.x, this->position.y + delta,
+      nextPosition = glm::vec3(this->position.x, this->position.y - delta,
                                this->position.z);
       break;
     case left:
@@ -13,7 +13,7 @@ void Ghost::move(float delta) {
                                this->position.z);
       break;
     case down:
-      nextPosition = glm::vec3(this->position.x, this->position.y - delta,
+      nextPosition = glm::vec3(this->position.x, this->position.y + delta,
                                this->position.z);
       break;
     case right:
