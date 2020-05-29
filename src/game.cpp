@@ -16,9 +16,9 @@ void Game::run() {
     // update positions (pacman + ghosts)
     pacman->updatePosition(1.0f);
     for (Ghost *ghost : ghosts) {
+      ghost->setMode(chase);
       ghost->updatePosition(1.0f);
     }
-
     // TODO: update game state
 
     // render

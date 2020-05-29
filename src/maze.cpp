@@ -39,16 +39,20 @@ glm::ivec2 Maze::blockNext(glm::ivec2 block, orientation direction) {
   return glm::ivec2(l, c);
 }
 
-bool Maze::valid(glm::ivec2 block) {
+bool Maze::valid(glm::ivec2 block, bool door) {
   if (block.x >= 0 && block.x < BLOCK_L && block.y >= 0 && block.y < BLOCK_C) {
-    return this->matrix[block.x][block.y] >= 0;
+    return (door && isDoor(block)) || this->matrix[block.x][block.y] >= 0;
   }
   return false;
 }
 
+bool Maze::isDoor(glm::ivec2 block) {
+  return this->matrix[block.x][block.y] == -2;
+}
+
 int Maze::eat(glm::ivec2 block) {
   int points = 0;
-  if (valid(block)) {
+  if (valid(block, false)) {
     points = matrix[block.x][block.y];
     matrix[block.x][block.y] = 0;
   }

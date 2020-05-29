@@ -20,6 +20,8 @@ class Ghost {
   glm::vec3 position;
   glm::vec2 target;
   glm::vec2 home;
+  bool useDoor;
+  bool isHome;
 
   static behaviour mode;
 
@@ -28,11 +30,15 @@ class Ghost {
   virtual void updateTarget() = 0;
   void updateDirection();
   void checkNeighbours(float distances[]);
+  bool isBelowDoor();
 
  public:
-  static const std::string personality[4];
+  static const char *personality[4];
 
   static void setMode(behaviour mode);
+
+  void setIsHome(bool isHome);
+  void setUseDoor(bool door);
 
   glm::vec3 getPosition();
 
@@ -83,8 +89,6 @@ class Clyde : public Ghost {
 
  public:
   Clyde(Pacman *pacman, Maze *maze);
-
-  void updatePosition(float delta);
 };
 
 #endif

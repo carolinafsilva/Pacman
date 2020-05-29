@@ -82,7 +82,9 @@ class Maze {
 
   glm::ivec2 blockNext(glm::ivec2 block, orientation direction);
 
-  bool valid(glm::ivec2 block);
+  bool valid(glm::ivec2 block, bool door);
+
+  bool isDoor(glm::ivec2 block);
 
   int eat(glm::ivec2 block);
 

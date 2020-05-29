@@ -106,10 +106,9 @@ void Window::render() {
   // Draw Game
   drawMaze();
   draw("pacman", this->pacman->getPosition());
-  std::string personality[4] = {"blinky", "pinky", "inky",
-                                "clyde"};  // FIXME: uncancer
+
   for (int i = 0; i < 4; i++) {
-    draw(personality[i], this->ghosts[i]->getPosition());
+    draw(Ghost::personality[i], this->ghosts[i]->getPosition());
   }
   // draw("blinky", this->ghosts[0]->getPosition());
 

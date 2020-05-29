@@ -51,7 +51,7 @@ void Pacman::updatePosition(float delta) {
     alligned = fabs(center.y - blockCenter.y) <= 0.01f;
   }
 
-  if (!alligned || this->maze->valid(nextBlock)) {
+  if (!alligned || this->maze->valid(nextBlock, false)) {
     this->position = nextPosition;
   }
 }
@@ -67,7 +67,7 @@ void Pacman::setOrientation(orientation direction) {
   centered = fabs(center.x - blockCenter.x) <= 0.01f &&
              fabs(center.y - blockCenter.y) <= 0.01f;
 
-  if (centered && this->maze->valid(nextBlock)) {
+  if (centered && this->maze->valid(nextBlock, false)) {
     this->direction = direction;
   }
 }

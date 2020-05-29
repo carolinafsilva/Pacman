@@ -22,6 +22,33 @@ void Ghost::move(float delta) {
       break;
   }
   this->position = nextPosition;
+
+  glm::vec2 center = this->maze->getCenter(this->position);
+  glm::ivec2 block = this->maze->pixelToBlock(center);
+
+  if (this->maze->isDoor(block)) {
+    if (this->direction == down) {
+      this->isHome = true;
+      this->useDoor = true;
+    }
+  }
+
+  if (fabs(this->target.x - center.x) <= 0.01f &&
+      fabs(this->target.y - center.y) <= 0.01f) {
+    this->isHome = false;
+    this->target = this->home;
+    this->direction = right;
+    this->useDoor = false;
+  }
+
+  // TODO: similar logic for entering house
+  // if (fabs(this->target.x - center.x) <= 0.01f &&
+  //     fabs(this->target.y - center.y) <= 0.01f) {
+  //   this->isHome = false;
+  //   this->target = this->home;
+  //   this->direction = right;
+  //   this->useDoor = false;
+  // }
 }
 
 orientation Ghost::oppositeDirection(orientation direction) {
@@ -67,16 +94,16 @@ void Ghost::checkNeighbours(float distances[]) {
   glm::ivec2 ghostBlock = this->maze->pixelToBlock(ghostCenter);
   glm::vec2 blockCenter = this->maze->blockToPixel(ghostBlock);
   orientation oppositeDir = this->oppositeDirection(this->direction);
+  bool centered = fabs(ghostCenter.x - blockCenter.x) <= 0.01f &&
+                  fabs(ghostCenter.y - blockCenter.y) <= 0.01f;
 
-  glm::ivec2 testBlock;
   glm::vec2 nextPos;
-  bool centered;
+  glm::ivec2 testBlock;
   for (int i = 0; i < 4; i++) {
     testBlock = this->maze->blockNext(ghostBlock, (orientation)i);
-    centered = fabs(ghostCenter.x - blockCenter.x + ghostCenter.y -
-                    blockCenter.y) <= 0.01f;
     if (oppositeDir != (orientation)i &&
-        (!centered || this->maze->valid(testBlock))) {
+        ((this->isHome || centered) &&
+         this->maze->valid(testBlock, this->useDoor))) {
       if (this->mode != frightened) {
         nextPos = this->maze->blockToPixel(testBlock);
         distances[i] = this->maze->euclidianDist(nextPos, this->target);
@@ -88,40 +115,46 @@ void Ghost::checkNeighbours(float distances[]) {
 }
 
 void Ghost::updatePosition(float delta) {
-  this->updateTarget();
-  this->updateDirection();
+  if (!this->isHome) {
+    this->updateTarget();
+    this->updateDirection();
+  } else {
+    if (isBelowDoor()) {
+      this->direction = up;
+    }
+  }
   this->move(delta);
+}
+
+bool Ghost::isBelowDoor() {
+  glm::vec2 center = this->maze->getCenter(this->getPosition());
+  if (fabs(center.x - this->target.x) <= 0.01f) {
+    return true;
+  }
+  return false;
 }
 
 /**** public methods ****/
 void Ghost::setMode(behaviour mode) { Ghost::mode = mode; }
 
+void Ghost::setIsHome(bool isHome) { this->isHome = isHome; }
+
+void Ghost::setUseDoor(bool door) { this->useDoor = door; }
+
 glm::vec3 Ghost::getPosition() { return this->position; }
 
 void Ghost::setOrientation(orientation direction) {
-  glm::vec2 center = this->maze->getCenter(this->position);
-  glm::ivec2 currentBlock = this->maze->pixelToBlock(center);
-  glm::vec2 blockCenter = this->maze->blockToPixel(currentBlock);
-
-  glm::ivec2 nextBlock = this->maze->blockNext(currentBlock, direction);
-
-  bool centered;
-  centered = fabs(center.x - blockCenter.x) <= 0.01f &&
-             fabs(center.y - blockCenter.y) <= 0.01f;
-
-  if (centered && this->maze->valid(nextBlock)) {
-    this->direction = direction;
-  }
+  this->direction = direction;
 }
 
 /**** constructors ****/
 behaviour Ghost::mode = scatter;
-std::string personality[4] = {"blinky", "pinky", "inky", "clyde"};
+
+const char *Ghost::personality[4] = {"blinky", "pinky", "inky", "clyde"};
 
 Ghost::Ghost(Pacman *pacman, Maze *maze) {
   this->pacman = pacman;
   this->maze = maze;
-  this->direction = left;
 }
 
 Ghost::~Ghost() {}
@@ -129,23 +162,39 @@ Ghost::~Ghost() {}
 Blinky::Blinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
   this->position = glm::vec3(104, 84, 16);
   this->home = glm::vec2(204, -20);
+  this->target = this->home;
+  this->direction = right;
+  this->useDoor = false;
+  this->isHome = false;
 }
 
 Pinky::Pinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
   this->position = glm::vec3(104, 104, 16);
+  this->target = glm::vec2(112, 92);
   this->home = glm::vec2(20, -20);
+  this->direction = up;
+  this->useDoor = true;
+  this->isHome = true;
 }
 
 Inky::Inky(Pacman *pacman, Maze *maze, Ghost *blinky) : Ghost(pacman, maze) {
   this->blinky = (Blinky *)blinky;
   this->position = glm::vec3(88, 104, 16);
+  this->target = glm::vec2(112, 92);
   this->home = glm::vec2(220, 260);
+  this->direction = right;
+  this->useDoor = true;
+  this->isHome = true;
 }
 
 Clyde::Clyde(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
-  this->aroundPacman = false;
+  this->aroundPacman = true;
   this->position = glm::vec3(120, 104, 16);
+  this->target = glm::vec2(112, 92);
   this->home = glm::vec2(4, 260);
+  this->direction = left;
+  this->useDoor = true;
+  this->isHome = true;
 }
 
 void Blinky::updateTarget() {
@@ -230,6 +279,7 @@ void Clyde::updateTarget() {
       this->target = this->home;
       break;
     case chase:
+      this->checkDistanceToPacman();
       if (this->aroundPacman) {
         this->target = this->home;
       } else {
@@ -239,13 +289,6 @@ void Clyde::updateTarget() {
     case frightened:
       break;
   }
-}
-
-void Clyde::updatePosition(float delta) {
-  this->checkDistanceToPacman();
-  this->updateTarget();
-  this->updateDirection();
-  this->move(delta);
 }
 
 void Clyde::checkDistanceToPacman() {
