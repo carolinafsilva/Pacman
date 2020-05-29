@@ -17,7 +17,6 @@ glm::vec3 Pacman::getPosition() { return this->position; }
 int Pacman::getLives() { return this->lives; }
 
 void Pacman::updatePosition(float delta) {
-  // FIXME: Dont enter walls
   // Calculate next position
   glm::vec3 nextPosition;
   switch (this->direction) {
@@ -51,9 +50,6 @@ void Pacman::updatePosition(float delta) {
   } else {
     alligned = fabs(center.y - blockCenter.y) <= 0.01f;
   }
-
-  // bool alligned =
-  //     fabs(center.x - blockCenter.x + center.y - blockCenter.y) <= 0.01f;
 
   if (!alligned || this->maze->valid(nextBlock)) {
     this->position = nextPosition;
