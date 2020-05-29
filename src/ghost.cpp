@@ -100,6 +100,7 @@ glm::vec3 Ghost::getPosition() { return this->position; }
 
 /**** constructors ****/
 behaviour Ghost::mode = scatter;
+std::string personality[4] = {"blinky", "pinky", "inky", "clyde"};
 
 Ghost::Ghost(Pacman *pacman, Maze *maze) {
   this->pacman = pacman;
@@ -110,24 +111,24 @@ Ghost::Ghost(Pacman *pacman, Maze *maze) {
 Ghost::~Ghost() {}
 
 Blinky::Blinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
-  this->position = glm::vec3(104, 148, 16);
+  this->position = glm::vec3(104, 84, 16);
   this->home = glm::vec2(204, 268);
 }
 
 Pinky::Pinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
-  this->position = glm::vec3(104, 128, 16);
+  this->position = glm::vec3(104, 104, 16);
   this->home = glm::vec2(20, 268);
 }
 
-Inky::Inky(Pacman *pacman, Maze *maze, Blinky *blinky) : Ghost(pacman, maze) {
-  this->blinky = blinky;
-  this->position = glm::vec3(88, 128, 16);
+Inky::Inky(Pacman *pacman, Maze *maze, Ghost *blinky) : Ghost(pacman, maze) {
+  this->blinky = (Blinky *)blinky;
+  this->position = glm::vec3(88, 104, 16);
   this->home = glm::vec2(220, -12);
 }
 
 Clyde::Clyde(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
   this->aroundPacman = false;
-  this->position = glm::vec3(120, 128, 16);
+  this->position = glm::vec3(120, 104, 16);
   this->home = glm::vec2(4, -12);
 }
 

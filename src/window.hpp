@@ -3,25 +3,29 @@
 
 #include "opengl.hpp"
 #include "shader.hpp"
+#include "pacman.hpp"
+#include "ghost.hpp"
 #include "resource_manager.hpp"
 #include "sprite_sheet_renderer.hpp"
 
+#include <vector>
 #include <iostream>
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 224
+#define SCREEN_HEIGHT 248
 
 class Window {
  private:
   GLFWwindow *window;
   GLuint shaderProgram;
+  Pacman *pacman;
+  std::vector<Ghost *> ghosts;
   SpriteSheetRenderer *SheetRenderer;
   unsigned int VBO, Maze_VAO, Pacman_VAO, EBO;
 
-  void transferPacman();
-  void transferMaze();
+  void transferTextures();
 
-  void drawPacman();
+  void draw(std::string textureName, glm::vec3 position);
   void drawMaze();
 
   static void framebuffer_size_callback(GLFWwindow *window, int width,
@@ -36,7 +40,7 @@ class Window {
   void deleteDataFromGPUMemory();
   void terminate();
 
-  Window();
+  Window(Pacman *pacman, std::vector<Ghost *> &ghosts);
 };
 
 #endif

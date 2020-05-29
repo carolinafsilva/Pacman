@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <vector>
+
 #include "ghost.hpp"
 #include "maze.hpp"
 #include "pacman.hpp"
@@ -14,10 +16,7 @@ class Game {
 
   Pacman *pacman;
 
-  Blinky *blinky;
-  Pinky *pinky;
-  Inky *inky;
-  Clyde *clide;
+  std::vector<Ghost *> ghosts;
 
   int score;
 

@@ -3,7 +3,7 @@
 Pacman::Pacman(Maze *maze) {
   this->maze = maze;
   this->direction = left;
-  this->position = glm::vec3(104, 62, 16);
+  this->position = glm::vec3(104, 180, 16);
 
   this->lives = 4;
 }

@@ -30,6 +30,8 @@ class Ghost {
   void checkNeighbours(float distances[]);
 
  public:
+  static const std::string personality[4];
+
   static void setMode(behaviour mode);
 
   glm::vec3 getPosition();
@@ -65,7 +67,7 @@ class Inky : public Ghost {
   void updateTarget();
 
  public:
-  Inky(Pacman *pacman, Maze *maze, Blinky *blinky);
+  Inky(Pacman *pacman, Maze *maze, Ghost *blinky);
 };
 
 class Clyde : public Ghost {

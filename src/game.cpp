@@ -29,16 +29,16 @@ void Game::clean() {
 }
 
 Game::Game() {
-  this->window = new Window();
-
   this->maze = new Maze();
 
   this->pacman = new Pacman(this->maze);
 
-  this->blinky = new Blinky(this->pacman, this->maze);
-  this->pinky = new Pinky(this->pacman, this->maze);
-  this->inky = new Inky(this->pacman, this->maze, this->blinky);
-  this->clide = new Clyde(this->pacman, this->maze);
+  ghosts.push_back(new Blinky(this->pacman, this->maze));
+  ghosts.push_back(new Pinky(this->pacman, this->maze));
+  ghosts.push_back(new Inky(this->pacman, this->maze, this->ghosts[0]));
+  ghosts.push_back(new Clyde(this->pacman, this->maze));
+
+  this->window = new Window(this->pacman, this->ghosts);
 
   this->score = 0;
 }
