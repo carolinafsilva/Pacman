@@ -37,10 +37,10 @@ Game::Game() {
 
   this->pacman = new Pacman(this->maze);
 
-  ghosts.push_back(new Blinky(this->pacman, this->maze));
-  ghosts.push_back(new Pinky(this->pacman, this->maze));
-  ghosts.push_back(new Inky(this->pacman, this->maze, this->ghosts[0]));
-  ghosts.push_back(new Clyde(this->pacman, this->maze));
+  this->ghosts.push_back(new Blinky(this->pacman, this->maze));
+  this->ghosts.push_back(new Pinky(this->pacman, this->maze));
+  this->ghosts.push_back(new Inky(this->pacman, this->maze, this->ghosts[0]));
+  this->ghosts.push_back(new Clyde(this->pacman, this->maze));
 
   this->window = new Window(this->pacman, this->ghosts);
 
