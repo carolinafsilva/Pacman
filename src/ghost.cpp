@@ -50,7 +50,7 @@ void Ghost::updateDirection() {
     for (int i = 0; i < 4; i++) {
       if (distances[i] >= 0 && distances[i] - min <= 0.01f) {
         min = distances[i];
-        this->direction = (orientation)i;
+        this->setOrientation((orientation)i);
       }
     }
   } else {
@@ -58,7 +58,7 @@ void Ghost::updateDirection() {
     do {
       randomDirection = rand() % 4;
     } while (distances[randomDirection] != -1);
-    this->direction = (orientation)randomDirection;
+    this->setOrientation((orientation)randomDirection);
   }
 }
 
@@ -97,6 +97,22 @@ void Ghost::updatePosition(float delta) {
 void Ghost::setMode(behaviour mode) { Ghost::mode = mode; }
 
 glm::vec3 Ghost::getPosition() { return this->position; }
+
+void Ghost::setOrientation(orientation direction) {
+  glm::vec2 center = this->maze->getCenter(this->position);
+  glm::ivec2 currentBlock = this->maze->pixelToBlock(center);
+  glm::vec2 blockCenter = this->maze->blockToPixel(currentBlock);
+
+  glm::ivec2 nextBlock = this->maze->blockNext(currentBlock, direction);
+
+  bool centered;
+  centered = fabs(center.x - blockCenter.x) <= 0.01f &&
+             fabs(center.y - blockCenter.y) <= 0.01f;
+
+  if (centered && this->maze->valid(nextBlock)) {
+    this->direction = direction;
+  }
+}
 
 /**** constructors ****/
 behaviour Ghost::mode = scatter;

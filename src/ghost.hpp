@@ -35,6 +35,9 @@ class Ghost {
   static void setMode(behaviour mode);
 
   glm::vec3 getPosition();
+
+  void setOrientation(orientation direction);
+
   void updatePosition(float delta);
 
   Ghost(Pacman *pacman, Maze *maze);

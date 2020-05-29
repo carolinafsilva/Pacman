@@ -18,7 +18,7 @@ class Pacman {
   glm::vec3 getPosition();
   int getLives();
 
-  void setOrientation(orientation direction = left);
+  void setOrientation(orientation direction);
 
   void updatePosition(float delta);
 
