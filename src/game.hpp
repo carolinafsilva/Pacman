@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <vector>
+#include <chrono>
 
 #include "ghost.hpp"
 #include "maze.hpp"
@@ -15,10 +16,14 @@ class Game {
   Maze *maze;
 
   Pacman *pacman;
-
   std::vector<Ghost *> ghosts;
 
+  std::chrono::steady_clock::time_point start_time;
+
   int score;
+  int mode_tracker;
+
+  void setMode(long long seconds);
 
  public:
   void setup();

@@ -65,6 +65,10 @@ void Ghost::move(float delta) {
   // }
 }
 
+void Ghost::turnAround() {
+  this->direction = this->oppositeDirection(this->direction);
+}
+
 orientation Ghost::oppositeDirection(orientation direction) {
   switch (direction) {
     case up:

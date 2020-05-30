@@ -39,7 +39,8 @@ class Ghost {
  public:
   static const char *personality[4];
 
-  static void setMode(behaviour mode);
+  void turnAround();
+  void setMode(behaviour mode);
 
   void setIsHome(bool isHome);
   void setUseDoor(bool door);

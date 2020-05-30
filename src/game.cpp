@@ -3,13 +3,22 @@
 #include "input.hpp"
 
 void Game::setup() {
+  // set random seed
+  srand(time(NULL));
   window->initialize();
   window->transferDataToGPUMemory();
-  srand(time(NULL));
 }
 
 void Game::run() {
+  // save starting time
+  this->start_time = std::chrono::steady_clock::now();
+
   do {
+    // get seconds since start
+    long long seconds = std::chrono::duration_cast<std::chrono::seconds>(
+                            std::chrono::steady_clock::now() - start_time)
+                            .count();
+
     // process input
     processInput(this->window, pacman);
 
@@ -20,12 +29,74 @@ void Game::run() {
     }
 
     // TODO: update game state
-    Ghost::setMode(scatter);
+    this->setMode(seconds);
 
     // render
     window->render();
 
   } while (processExit(this->window));
+}
+
+void Game::setMode(long long seconds) {
+  // wave 1
+  if (seconds == 0 && this->mode_tracker == 0) {
+    for (Ghost *ghost : this->ghosts) {
+      ghost->setMode(scatter);
+    }
+    this->mode_tracker += 1;
+  }
+  if (seconds == 7 && this->mode_tracker == 1) {
+    for (Ghost *ghost : this->ghosts) {
+      ghost->turnAround();
+      ghost->setMode(chase);
+    }
+    this->mode_tracker += 1;
+  }
+  // wave 2
+  if (seconds == 27 && this->mode_tracker == 2) {
+    for (Ghost *ghost : this->ghosts) {
+      ghost->turnAround();
+      ghost->setMode(scatter);
+    }
+    this->mode_tracker += 1;
+  }
+  if (seconds == 34 && this->mode_tracker == 3) {
+    for (Ghost *ghost : this->ghosts) {
+      ghost->turnAround();
+      ghost->setMode(chase);
+    }
+    this->mode_tracker += 1;
+  }
+  // wave 3
+  if (seconds == 54 && this->mode_tracker == 4) {
+    for (Ghost *ghost : this->ghosts) {
+      ghost->turnAround();
+      ghost->setMode(scatter);
+    }
+    this->mode_tracker += 1;
+  }
+  if (seconds == 59 && this->mode_tracker == 5) {
+    for (Ghost *ghost : this->ghosts) {
+      ghost->turnAround();
+      ghost->setMode(chase);
+    }
+    this->mode_tracker += 1;
+  }
+  // wave 4
+  if (seconds == 79 && this->mode_tracker == 6) {
+    for (Ghost *ghost : this->ghosts) {
+      ghost->turnAround();
+      ghost->setMode(scatter);
+    }
+    this->mode_tracker += 1;
+  }
+  if (seconds == 84 && this->mode_tracker == 7) {
+    for (Ghost *ghost : this->ghosts) {
+      ghost->turnAround();
+      ghost->setMode(chase);
+    }
+    this->mode_tracker += 1;
+  }
 }
 
 void Game::clean() {
@@ -45,5 +116,6 @@ Game::Game() {
 
   this->window = new Window(this->maze, this->pacman, this->ghosts);
 
+  this->mode_tracker = 0;
   this->score = 0;
 }
