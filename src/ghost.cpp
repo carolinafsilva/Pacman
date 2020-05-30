@@ -104,11 +104,20 @@ void Ghost::updateDirection() {
       }
     }
   } else {
-    int randomDirection;
-    do {
-      randomDirection = rand() % 4;
-    } while (distances[randomDirection] != -1);
-    this->setOrientation((orientation)randomDirection);
+    bool flag = false;
+    for (int i = 0; i < 4; i++) {
+      if (distances[i] >= 0) {
+        flag = true;
+      }
+    }
+
+    if (flag) {
+      int randomDirection;
+      do {
+        randomDirection = rand() % 4;
+      } while (fabs(distances[randomDirection] + 1) <= 0.01);
+      this->setOrientation((orientation)randomDirection);
+    }
   }
 }
 

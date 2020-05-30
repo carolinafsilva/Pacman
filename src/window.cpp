@@ -10,6 +10,8 @@ void Window::transferTextures() {
   ResourceManager::LoadTexture("assets/images/Pinky_left.gif", true, "pinky");
   ResourceManager::LoadTexture("assets/images/Inky_left.gif", true, "inky");
   ResourceManager::LoadTexture("assets/images/Clyde_left.gif", true, "clyde");
+  ResourceManager::LoadTexture("assets/images/frightened.gif", true,
+                               "frightened");
   ResourceManager::LoadTexture("assets/images/foody_food.png", true, "food");
   ResourceManager::LoadTexture("assets/images/energyzer.png", true,
                                "energyzer");
@@ -134,13 +136,15 @@ void Window::render() {
     for (Ghost *ghost : ghosts) {
       ghost->reset();
     }
-    this->pacman->setIsDead(false);
-
   } else {
     draw("pacman", this->pacman->getPosition());
     // Draw Ghosts
     for (int i = 0; i < 4; i++) {
-      draw(Ghost::personality[i], this->ghosts[i]->getPosition());
+      if (Ghost::getMode() != frightened) {
+        draw(Ghost::personality[i], this->ghosts[i]->getPosition());
+      } else {
+        draw("frightened", this->ghosts[i]->getPosition());
+      }
     }
   }
 

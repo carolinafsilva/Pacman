@@ -76,12 +76,15 @@ class Maze {
       {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
 
-  int numberOfDotsRemaining;
+  int dotsRemaining;
   glm::vec2 tunnelLeft;
   glm::vec2 tunnelRight;
 
  public:
   glm::vec2 getCenter(glm::vec3 position);
+
+  int getDotsRemaining();
+  void decrementDotsRemaining();
 
   glm::ivec2 blockNext(glm::ivec2 block, orientation direction);
 

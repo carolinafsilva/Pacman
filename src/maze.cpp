@@ -4,6 +4,9 @@ glm::vec2 Maze::getCenter(glm::vec3 position) {
   return glm::vec2(position.x + position.z / 2, position.y + position.z / 2);
 }
 
+int Maze::getDotsRemaining() { return this->dotsRemaining; }
+void Maze::decrementDotsRemaining() { this->dotsRemaining -= 1; }
+
 glm::ivec2 Maze::pixelToBlock(glm::vec2 center) {
   int c = floor(center.x / 8);
   int l = floor(center.y / 8);
@@ -81,7 +84,7 @@ void Maze::movePacman(glm::vec3 position) {}
 void Maze::moveGhost(glm::vec3 position) {}
 
 Maze::Maze() {
-  this->numberOfDotsRemaining = 240;
+  this->dotsRemaining = 244;
   this->tunnelLeft = glm::vec2(-16, 108);
   this->tunnelRight = glm::vec2(224, 108);
 }

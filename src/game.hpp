@@ -9,6 +9,8 @@
 #include "pacman.hpp"
 #include "window.hpp"
 
+#define ENERGYZER_TIME 5
+
 class Game {
  private:
   Window *window;
@@ -18,12 +20,20 @@ class Game {
   Pacman *pacman;
   std::vector<Ghost *> ghosts;
 
-  std::chrono::steady_clock::time_point start_time;
+  std::chrono::steady_clock::time_point startTime;
+  std::chrono::steady_clock::time_point lastEnergyzerTime;
 
   int score;
-  int mode_tracker;
+  int level;
 
-  void setMode(long long seconds);
+  int modeTracker;
+
+  bool lastModeTracker;
+  behaviour lastMode;
+
+  int energyzerEaten;
+
+  void setMode(long long seconds, long long timer);
   void checkColision();
 
  public:

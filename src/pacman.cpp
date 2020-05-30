@@ -16,6 +16,7 @@ orientation Pacman::getOrientation() { return this->direction; }
 glm::vec3 Pacman::getPosition() { return this->position; }
 
 int Pacman::getLives() { return this->lives; }
+void Pacman::decrementLives() { this->lives -= 1; }
 
 bool Pacman::isDead() { return this->dead; }
 
@@ -115,10 +116,7 @@ void Pacman::setOrientation(orientation direction) {
   }
 }
 
-void Pacman::setIsDead(bool dead) {
-  this->dead = dead;
-  this->lives -= 1;
-}
+void Pacman::setIsDead(bool dead) { this->dead = dead; }
 
 void Pacman::reset() {
   this->position = glm::vec3(104.0f, 180.0f, 16.0f);

@@ -25,6 +25,7 @@ class Pacman {
 
   void setOrientation(orientation direction);
   void setIsDead(bool dead);
+  void decrementLives();
 
   void updatePosition(float delta);
   void reset();

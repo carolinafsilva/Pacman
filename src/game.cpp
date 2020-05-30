@@ -11,111 +11,174 @@ void Game::setup() {
 
 void Game::run() {
   // save starting time
-  this->start_time = std::chrono::steady_clock::now();
+  this->startTime = std::chrono::steady_clock::now();
+  this->lastEnergyzerTime = std::chrono::steady_clock::now();
 
   do {
     // get seconds since start
     long long seconds = std::chrono::duration_cast<std::chrono::seconds>(
-                            std::chrono::steady_clock::now() - start_time)
+                            std::chrono::steady_clock::now() - startTime)
                             .count();
 
     // process input
     processInput(this->window, pacman);
 
+    // update positions
     this->pacman->updatePosition(1.0f);
-
-    // consume points
-    glm::vec2 center = this->maze->getCenter(this->pacman->getPosition());
-    glm::ivec2 block = this->maze->pixelToBlock(center);
-    this->score += this->maze->eat(block);
-
     for (Ghost *ghost : ghosts) {
       ghost->updatePosition(1.0f);
     }
 
-    // TODO: update game state
-    this->setMode(seconds);
+    // handle colisions
     this->checkColision();
 
-    // render
+    // consume points
+    glm::vec2 center = this->maze->getCenter(this->pacman->getPosition());
+    glm::ivec2 block = this->maze->pixelToBlock(center);
+
+    int points = this->maze->eat(block);
+
+    if (points > 0) {
+      this->score += points;
+      this->maze->decrementDotsRemaining();
+      if (points == 50) {
+        this->lastEnergyzerTime = std::chrono::steady_clock::now();
+        for (Ghost *ghost : this->ghosts) {
+          ghost->turnAround();
+        }
+        this->energyzerEaten += 1;
+      }
+    }
+
+    // get seconds since enegizer eaten
+    long long timer = std::chrono::duration_cast<std::chrono::seconds>(
+                          std::chrono::steady_clock::now() - lastEnergyzerTime)
+                          .count();
+
+    // set mode
+    this->setMode(seconds, timer);
+
+    // render window
     this->window->render();
 
+    // reset pacman
+    if (this->pacman->isDead()) {
+      this->pacman->setIsDead(false);
+      this->pacman->decrementLives();
+    }
+
+    // handle game over
+    if (this->maze->getDotsRemaining() == 0 || this->pacman->getLives() == 0) {
+      break;
+    }
+
   } while (processExit(this->window));
+
+  std::cout << "Game Over" << std::endl;
 }
 
-void Game::setMode(long long seconds) {
+void Game::setMode(long long seconds, long long timer) {
   // wave 1
-  if (seconds == 0 && this->mode_tracker == 0) {
-    for (Ghost *ghost : this->ghosts) {
-      ghost->setMode(scatter);
-    }
-    this->mode_tracker += 1;
+  if (seconds == 0 + ENERGYZER_TIME * this->energyzerEaten &&
+      this->modeTracker == 0) {
+    Ghost::setMode(scatter);
+    this->modeTracker += 1;
   }
-  if (seconds == 7 && this->mode_tracker == 1) {
+  if (seconds == 7 + ENERGYZER_TIME * this->energyzerEaten &&
+      this->modeTracker == 1) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
-      ghost->setMode(chase);
     }
-    this->mode_tracker += 1;
+    Ghost::setMode(chase);
+    this->modeTracker += 1;
   }
   // wave 2
-  if (seconds == 27 && this->mode_tracker == 2) {
+  if (seconds == 27 + ENERGYZER_TIME * this->energyzerEaten &&
+      this->modeTracker == 2) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
-      ghost->setMode(scatter);
     }
-    this->mode_tracker += 1;
+    Ghost::setMode(scatter);
+    this->modeTracker += 1;
   }
-  if (seconds == 34 && this->mode_tracker == 3) {
+  if (seconds == 34 + ENERGYZER_TIME * this->energyzerEaten &&
+      this->modeTracker == 3) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
-      ghost->setMode(chase);
     }
-    this->mode_tracker += 1;
+    Ghost::setMode(chase);
+    this->modeTracker += 1;
   }
   // wave 3
-  if (seconds == 54 && this->mode_tracker == 4) {
+  if (seconds == 54 + ENERGYZER_TIME * this->energyzerEaten &&
+      this->modeTracker == 4) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
-      ghost->setMode(scatter);
     }
-    this->mode_tracker += 1;
+    Ghost::setMode(scatter);
+    this->modeTracker += 1;
   }
-  if (seconds == 59 && this->mode_tracker == 5) {
+  if (seconds == 59 + ENERGYZER_TIME * this->energyzerEaten &&
+      this->modeTracker == 5) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
-      ghost->setMode(chase);
     }
-    this->mode_tracker += 1;
+    Ghost::setMode(chase);
+    this->modeTracker += 1;
   }
   // wave 4
-  if (seconds == 79 && this->mode_tracker == 6) {
+  if (seconds == 79 + ENERGYZER_TIME * this->energyzerEaten &&
+      this->modeTracker == 6) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
-      ghost->setMode(scatter);
     }
-    this->mode_tracker += 1;
+    Ghost::setMode(scatter);
+    this->modeTracker += 1;
   }
-  if (seconds == 84 && this->mode_tracker == 7) {
+  if (seconds == 84 + ENERGYZER_TIME * this->energyzerEaten &&
+      this->modeTracker == 7) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
-      ghost->setMode(chase);
     }
-    this->mode_tracker += 1;
+    Ghost::setMode(chase);
+    this->modeTracker += 1;
+  }
+  if (timer <= ENERGYZER_TIME && this->energyzerEaten > 0) {
+    if (this->lastModeTracker == false) {
+      this->lastMode = Ghost::getMode();
+    }
+    this->lastModeTracker = true;
+    Ghost::setMode(frightened);
+  } else if (this->lastModeTracker) {
+    this->lastModeTracker = false;
+    Ghost::setMode(this->lastMode);
   }
 }
 
 void Game::checkColision() {
+  glm::vec2 pacmanCenter = this->maze->getCenter(this->pacman->getPosition());
+  glm::ivec2 pacmanBlock = this->maze->pixelToBlock(pacmanCenter);
+
+  glm::vec2 ghostCenter;
+  glm::ivec2 ghostBlock;
+
   if (Ghost::getMode() != frightened) {
-    glm::vec2 pacmanCenter = this->maze->getCenter(this->pacman->getPosition());
-    glm::ivec2 pacmanBlock = this->maze->pixelToBlock(pacmanCenter);
-    glm::vec2 ghostCenter;
-    glm::ivec2 ghostBlock;
     for (Ghost *ghost : ghosts) {
       ghostCenter = this->maze->getCenter(ghost->getPosition());
       ghostBlock = this->maze->pixelToBlock(ghostCenter);
+
       if (ghostBlock.x == pacmanBlock.x && ghostBlock.y == pacmanBlock.y) {
+        this->startTime = std::chrono::steady_clock::now();
+        this->energyzerEaten = 0;
+        this->modeTracker = 0;
+
         this->pacman->setIsDead(true);
+      }
+    }
+  } else {
+    for (Ghost *ghost : ghosts) {
+      if (ghostBlock.x == pacmanBlock.x && ghostBlock.y == pacmanBlock.y) {
+        // TODO: Set ghost to eaten
       }
     }
   }
@@ -138,6 +201,12 @@ Game::Game() {
 
   this->window = new Window(this->maze, this->pacman, this->ghosts);
 
-  this->mode_tracker = 0;
+  this->modeTracker = 0;
+
+  this->lastModeTracker = false;
+
+  this->energyzerEaten = 0;
+
+  this->level = 1;
   this->score = 0;
 }
