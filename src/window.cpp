@@ -145,7 +145,7 @@ void Window::render() {
         draw("eyes", this->ghosts[i]->getPosition());
       } else {
         if (Ghost::getMode() != frightened) {
-          draw(Ghost::personality[i], this->ghosts[i]->getPosition());
+          draw(Ghost::getPersonality()[i], this->ghosts[i]->getPosition());
         } else {
           draw("frightened", this->ghosts[i]->getPosition());
         }

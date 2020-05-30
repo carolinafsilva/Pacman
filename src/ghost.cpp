@@ -172,7 +172,7 @@ bool Ghost::isBelowDoor() {
 // -----------------------------------------------------------------------------
 // Getters
 
-const char *Ghost::getPersonality() { return Ghost::personality; }
+std::vector<std::string> Ghost::getPersonality() { return Ghost::personality; }
 
 behaviour Ghost::getMode() { return Ghost::mode; }
 
@@ -221,7 +221,8 @@ void Ghost::turnAround() {
 
 behaviour Ghost::mode = scatter;
 
-const char *Ghost::personality[4] = {"blinky", "pinky", "inky", "clyde"};
+std::vector<std::string> Ghost::personality =
+    std::vector<std::string>({"blinky", "pinky", "inky", "clyde"});
 
 // -----------------------------------------------------------------------------
 // Constructors

@@ -4,6 +4,7 @@
 #include <math.h>
 
 #include <limits>
+#include <vector>
 #include <string>
 
 #include "opengl.hpp"
@@ -18,7 +19,7 @@ class Ghost {
   // ---------------------------------------------------------------------------
   // Attributes
 
-  static const char *personality[4];
+  static std::vector<std::string> personality;
   std::string name;
 
   Pacman *pacman;
@@ -57,7 +58,8 @@ class Ghost {
  public:
   // ---------------------------------------------------------------------------
   // Getters
-  static const char *getPersonality();
+
+  static std::vector<std::string> getPersonality();
   static behaviour getMode();
 
   orientation getOrientation();
