@@ -24,6 +24,7 @@ class Game {
   int mode_tracker;
 
   void setMode(long long seconds);
+  void checkColision();
 
  public:
   void setup();

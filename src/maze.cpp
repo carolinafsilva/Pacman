@@ -41,7 +41,7 @@ glm::ivec2 Maze::blockNext(glm::ivec2 block, orientation direction) {
 
 bool Maze::valid(glm::ivec2 block, bool door) {
   if (block.x >= 0 && block.x < BLOCK_L && block.y >= 0 && block.y < BLOCK_C) {
-    return (door && isDoor(block)) || this->matrix[block.x][block.y] >= 0;
+    return (door && this->isDoor(block)) || this->matrix[block.x][block.y] >= 0;
   }
   return false;
 }
@@ -72,8 +72,16 @@ float Maze::euclidianDist(glm::vec2 position1, glm::vec2 position2) {
                powf(position1.y - position2.y, 2));
 }
 
+glm::vec2 Maze::getTunnelLeft() { return this->tunnelLeft; }
+
+glm::vec2 Maze::getTunnelRight() { return this->tunnelRight; };
+
 void Maze::movePacman(glm::vec3 position) {}
 
 void Maze::moveGhost(glm::vec3 position) {}
 
-Maze::Maze() { this->numberOfDotsRemaining = 240; }
+Maze::Maze() {
+  this->numberOfDotsRemaining = 240;
+  this->tunnelLeft = glm::vec2(-16, 108);
+  this->tunnelRight = glm::vec2(224, 108);
+}

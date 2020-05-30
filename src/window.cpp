@@ -127,11 +127,21 @@ void Window::render() {
   }
 
   // Draw Pacman
-  draw("pacman", this->pacman->getPosition());
+  if (this->pacman->isDead()) {
+    // reset pacman position
+    this->pacman->reset();
+    // reset ghosts position
+    for (Ghost *ghost : ghosts) {
+      ghost->reset();
+    }
+    this->pacman->setIsDead(false);
 
-  // Draw Ghosts
-  for (int i = 0; i < 4; i++) {
-    draw(Ghost::personality[i], this->ghosts[i]->getPosition());
+  } else {
+    draw("pacman", this->pacman->getPosition());
+    // Draw Ghosts
+    for (int i = 0; i < 4; i++) {
+      draw(Ghost::personality[i], this->ghosts[i]->getPosition());
+    }
   }
 
   // swap the color buffer

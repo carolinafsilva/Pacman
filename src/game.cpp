@@ -22,7 +22,6 @@ void Game::run() {
     // process input
     processInput(this->window, pacman);
 
-    // update positions (pacman + ghosts)
     this->pacman->updatePosition(1.0f);
 
     // consume points
@@ -36,6 +35,7 @@ void Game::run() {
 
     // TODO: update game state
     this->setMode(seconds);
+    this->checkColision();
 
     // render
     this->window->render();
@@ -102,6 +102,22 @@ void Game::setMode(long long seconds) {
       ghost->setMode(chase);
     }
     this->mode_tracker += 1;
+  }
+}
+
+void Game::checkColision() {
+  if (Ghost::getMode() != frightened) {
+    glm::vec2 pacmanCenter = this->maze->getCenter(this->pacman->getPosition());
+    glm::ivec2 pacmanBlock = this->maze->pixelToBlock(pacmanCenter);
+    glm::vec2 ghostCenter;
+    glm::ivec2 ghostBlock;
+    for (Ghost *ghost : ghosts) {
+      ghostCenter = this->maze->getCenter(ghost->getPosition());
+      ghostBlock = this->maze->pixelToBlock(ghostCenter);
+      if (ghostBlock.x == pacmanBlock.x && ghostBlock.y == pacmanBlock.y) {
+        this->pacman->setIsDead(true);
+      }
+    }
   }
 }
 

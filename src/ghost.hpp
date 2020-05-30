@@ -24,6 +24,7 @@ class Ghost {
   glm::vec3 position;
   glm::vec2 target;
   glm::vec2 home;
+  glm::vec2 homeExit;
   bool useDoor;
   bool isHome;
 
@@ -34,6 +35,7 @@ class Ghost {
   virtual void updateTarget() = 0;
   void updateDirection();
   void checkNeighbours(float distances[]);
+  void checkTunnel();
   bool isBelowDoor();
 
  public:
@@ -47,9 +49,11 @@ class Ghost {
   void setOrientation(orientation direction);
 
   glm::vec3 getPosition();
-  behaviour getMode();
+  orientation getOrientation();
+  static behaviour getMode();
 
   void updatePosition(float delta);
+  virtual void reset() = 0;
 
   Ghost(Pacman *pacman, Maze *maze);
   virtual ~Ghost();
@@ -64,6 +68,7 @@ class Blinky : public Ghost {
 
  public:
   Blinky(Pacman *pacman, Maze *maze);
+  void reset();
 };
 
 class Pinky : public Ghost {
@@ -72,6 +77,7 @@ class Pinky : public Ghost {
 
  public:
   Pinky(Pacman *pacman, Maze *maze);
+  void reset();
 };
 
 class Inky : public Ghost {
@@ -82,6 +88,7 @@ class Inky : public Ghost {
 
  public:
   Inky(Pacman *pacman, Maze *maze, Ghost *blinky);
+  void reset();
 };
 
 class Clyde : public Ghost {
@@ -94,6 +101,7 @@ class Clyde : public Ghost {
 
  public:
   Clyde(Pacman *pacman, Maze *maze);
+  void reset();
 };
 
 #endif
