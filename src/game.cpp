@@ -162,23 +162,19 @@ void Game::checkColision() {
   glm::vec2 ghostCenter;
   glm::ivec2 ghostBlock;
 
-  if (Ghost::getMode() != frightened) {
-    for (Ghost *ghost : ghosts) {
-      ghostCenter = this->maze->getCenter(ghost->getPosition());
-      ghostBlock = this->maze->pixelToBlock(ghostCenter);
+  for (Ghost *ghost : ghosts) {
+    ghostCenter = this->maze->getCenter(ghost->getPosition());
+    ghostBlock = this->maze->pixelToBlock(ghostCenter);
 
-      if (ghostBlock.x == pacmanBlock.x && ghostBlock.y == pacmanBlock.y) {
+    if (ghostBlock.x == pacmanBlock.x && ghostBlock.y == pacmanBlock.y) {
+      if (Ghost::getMode() != frightened) {
         this->startTime = std::chrono::steady_clock::now();
         this->energyzerEaten = 0;
         this->modeTracker = 0;
 
         this->pacman->setIsDead(true);
-      }
-    }
-  } else {
-    for (Ghost *ghost : ghosts) {
-      if (ghostBlock.x == pacmanBlock.x && ghostBlock.y == pacmanBlock.y) {
-        // TODO: Set ghost to eaten
+      } else {
+        ghost->setDead(true);
       }
     }
   }

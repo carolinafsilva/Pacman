@@ -25,8 +25,10 @@ class Ghost {
   glm::vec2 target;
   glm::vec2 home;
   glm::vec2 homeExit;
+  glm::vec2 homeEntrance;
   bool useDoor;
   bool isHome;
+  bool dead;
 
   static behaviour mode;
 
@@ -37,6 +39,7 @@ class Ghost {
   void checkNeighbours(float distances[]);
   void checkTunnel();
   bool isBelowDoor();
+  bool isDead();
 
  public:
   static const char *personality[4];
@@ -46,6 +49,7 @@ class Ghost {
 
   void setIsHome(bool isHome);
   void setUseDoor(bool door);
+  void setDead(bool dead);
   void setOrientation(orientation direction);
 
   glm::vec3 getPosition();

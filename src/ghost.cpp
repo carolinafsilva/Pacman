@@ -27,47 +27,51 @@ void Ghost::move(float delta) {
   glm::vec2 center = this->maze->getCenter(this->position);
   glm::ivec2 block = this->maze->pixelToBlock(center);
 
-  if (this->maze->isDoor(block)) {
-    if (this->direction == down) {
-      this->isHome = true;
-      this->useDoor = true;
-    }
+  // if (this->maze->isDoor(block)) {
+  //   if (this->direction == down) {
+  //     // this->isHome = true;
+  //     this->useDoor = true;
+  //     this->dead = false;
+  //   }
+  // }
+
+  if (fabs(center.x - this->homeEntrance.x) <= 0.01f &&
+      fabs(center.y - this->homeEntrance.y) <= 0.01f) {
+    this->isHome = true;
+    this->useDoor = true;
+    this->dead = false;
   }
 
+  // when above door
   if (fabs(this->target.x - this->homeExit.x) <= 0.01f &&
       fabs(this->target.y - this->homeExit.y) <= 0.01f) {
     if (fabs(this->target.x - center.x) <= 0.01f &&
         fabs(this->target.y - center.y) <= 0.01f) {
-      this->target = this->home;
+      if (this->dead) {
+        this->direction = down;
+      } else {
+        this->target = this->home;
 
-      this->isHome = false;
-      this->useDoor = false;
+        this->isHome = false;
+        this->useDoor = false;
 
-      if (this->name.compare("blinky") == 0) {
-        this->direction = right;
-      }
-      if (this->name.compare("pinky") == 0) {
-        this->direction = left;
-      }
-      if (this->name.compare("inky") == 0) {
-        this->direction = right;
-      }
-      if (this->name.compare("clyde") == 0) {
-        this->direction = left;
+        if (this->name.compare("blinky") == 0) {
+          this->direction = right;
+        }
+        if (this->name.compare("pinky") == 0) {
+          this->direction = left;
+        }
+        if (this->name.compare("inky") == 0) {
+          this->direction = right;
+        }
+        if (this->name.compare("clyde") == 0) {
+          this->direction = left;
+        }
       }
     }
   }
 
   this->checkTunnel();
-
-  // TODO: similar logic for entering house
-  // if (fabs(this->target.x - center.x) <= 0.01f &&
-  //     fabs(this->target.y - center.y) <= 0.01f) {
-  //   this->isHome = false;
-  //   this->target = this->home;
-  //   this->direction = right;
-  //   this->useDoor = false;
-  // }
 }
 
 void Ghost::turnAround() {
@@ -95,7 +99,7 @@ void Ghost::updateDirection() {
   float distances[4] = {-1.0f, -1.0f, -1.0f, -1.0f};
   checkNeighbours(distances);
 
-  if (this->mode != frightened) {
+  if (this->mode != frightened || this->dead) {
     float min = INFINITY;
     for (int i = 0; i < 4; i++) {
       if (distances[i] >= 0 && distances[i] - min <= 0.01f) {
@@ -186,6 +190,7 @@ bool Ghost::isBelowDoor() {
   return false;
 }
 
+bool Ghost::isDead() { return this->dead; }
 // -----------------------------------------------------------------------------
 // Public methods
 void Ghost::setMode(behaviour mode) { Ghost::mode = mode; }
@@ -193,6 +198,8 @@ void Ghost::setMode(behaviour mode) { Ghost::mode = mode; }
 void Ghost::setIsHome(bool isHome) { this->isHome = isHome; }
 
 void Ghost::setUseDoor(bool door) { this->useDoor = door; }
+
+void Ghost::setDead(bool dead) { this->dead = dead; }
 
 glm::vec3 Ghost::getPosition() { return this->position; }
 
@@ -214,6 +221,8 @@ Ghost::Ghost(Pacman *pacman, Maze *maze) {
   this->pacman = pacman;
   this->maze = maze;
   this->homeExit = glm::vec2(112, 92);
+  this->homeEntrance = glm::vec2(112, 112);
+  this->dead = false;
 }
 
 Ghost::~Ghost() {}
@@ -263,96 +272,112 @@ Clyde::Clyde(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
 // -----------------------------------------------------------------------------
 // Private methods
 void Blinky::updateTarget() {
-  switch (this->mode) {
-    case scatter:
-      this->target = this->home;
-      break;
-    case chase:
-      this->target = this->maze->getCenter(this->pacman->getPosition());
-      break;
-    case frightened:
-      break;
+  if (!this->dead) {
+    switch (this->mode) {
+      case scatter:
+        this->target = this->home;
+        break;
+      case chase:
+        this->target = this->maze->getCenter(this->pacman->getPosition());
+        break;
+      case frightened:
+        break;
+    }
+  } else {
+    this->target = this->homeExit;
   }
 }
 
 void Pinky::updateTarget() {
-  switch (this->mode) {
-    case scatter:
-      this->target = this->home;
-      break;
-    case frightened:
-      break;
-    case chase:
-      glm::vec2 pacmanCenter =
-          this->maze->getCenter(this->pacman->getPosition());
-      orientation pacmanDirection = this->pacman->getOrientation();
-      switch (pacmanDirection) {
-        case up:
-          this->target = glm::vec2(pacmanCenter.x, pacmanCenter.y + 4 * 8);
-          break;
-        case left:
-          this->target = glm::vec2(pacmanCenter.x - 4 * 8, pacmanCenter.y);
-          break;
-        case down:
-          this->target = glm::vec2(pacmanCenter.x, pacmanCenter.y - 4 * 8);
-          break;
-        case right:
-          this->target = glm::vec2(pacmanCenter.x + 4 * 8, pacmanCenter.y);
-          break;
-      }
-      break;
+  if (!this->dead) {
+    switch (this->mode) {
+      case scatter:
+        this->target = this->home;
+        break;
+      case frightened:
+        break;
+      case chase:
+        glm::vec2 pacmanCenter =
+            this->maze->getCenter(this->pacman->getPosition());
+        orientation pacmanDirection = this->pacman->getOrientation();
+        switch (pacmanDirection) {
+          case up:
+            this->target = glm::vec2(pacmanCenter.x, pacmanCenter.y + 4 * 8);
+            break;
+          case left:
+            this->target = glm::vec2(pacmanCenter.x - 4 * 8, pacmanCenter.y);
+            break;
+          case down:
+            this->target = glm::vec2(pacmanCenter.x, pacmanCenter.y - 4 * 8);
+            break;
+          case right:
+            this->target = glm::vec2(pacmanCenter.x + 4 * 8, pacmanCenter.y);
+            break;
+        }
+        break;
+    }
+  } else {
+    this->target = this->homeExit;
   }
 }
 
 void Inky::updateTarget() {
-  switch (this->mode) {
-    case scatter:
-      this->target = this->home;
-      break;
-    case frightened:
-      break;
-    case chase:
-      glm::vec2 pacmanCenter =
-          this->maze->getCenter(this->pacman->getPosition());
-      glm::vec2 blinkyCenter =
-          this->maze->getCenter(this->blinky->getPosition());
-      orientation pacmanDirection = this->pacman->getOrientation();
-      glm::vec2 pivot;
-      switch (pacmanDirection) {
-        case up:
-          pivot = glm::vec2(pacmanCenter.x, pacmanCenter.y + 2 * 8);
-          break;
-        case left:
-          pivot = glm::vec2(pacmanCenter.x - 2 * 8, pacmanCenter.y);
-          break;
-        case down:
-          pivot = glm::vec2(pacmanCenter.x, pacmanCenter.y - 2 * 8);
-          break;
-        case right:
-          pivot = glm::vec2(pacmanCenter.x + 2 * 8, pacmanCenter.y);
-          break;
-      }
-      glm::vec2 vectr(pivot.x - blinkyCenter.x, pivot.y - blinkyCenter.y);
-      this->target = glm::vec2(pivot.x + vectr.x, pivot.y + vectr.y);
-      break;
+  if (!this->dead) {
+    switch (this->mode) {
+      case scatter:
+        this->target = this->home;
+        break;
+      case frightened:
+        break;
+      case chase:
+        glm::vec2 pacmanCenter =
+            this->maze->getCenter(this->pacman->getPosition());
+        glm::vec2 blinkyCenter =
+            this->maze->getCenter(this->blinky->getPosition());
+        orientation pacmanDirection = this->pacman->getOrientation();
+        glm::vec2 pivot;
+        switch (pacmanDirection) {
+          case up:
+            pivot = glm::vec2(pacmanCenter.x, pacmanCenter.y + 2 * 8);
+            break;
+          case left:
+            pivot = glm::vec2(pacmanCenter.x - 2 * 8, pacmanCenter.y);
+            break;
+          case down:
+            pivot = glm::vec2(pacmanCenter.x, pacmanCenter.y - 2 * 8);
+            break;
+          case right:
+            pivot = glm::vec2(pacmanCenter.x + 2 * 8, pacmanCenter.y);
+            break;
+        }
+        glm::vec2 vectr(pivot.x - blinkyCenter.x, pivot.y - blinkyCenter.y);
+        this->target = glm::vec2(pivot.x + vectr.x, pivot.y + vectr.y);
+        break;
+    }
+  } else {
+    this->target = this->homeExit;
   }
 }
 
 void Clyde::updateTarget() {
-  switch (this->mode) {
-    case scatter:
-      this->target = this->home;
-      break;
-    case chase:
-      this->checkDistanceToPacman();
-      if (this->aroundPacman) {
+  if (!this->dead) {
+    switch (this->mode) {
+      case scatter:
         this->target = this->home;
-      } else {
-        this->target = this->maze->getCenter(this->pacman->getPosition());
-      }
-      break;
-    case frightened:
-      break;
+        break;
+      case chase:
+        this->checkDistanceToPacman();
+        if (this->aroundPacman) {
+          this->target = this->home;
+        } else {
+          this->target = this->maze->getCenter(this->pacman->getPosition());
+        }
+        break;
+      case frightened:
+        break;
+    }
+  } else {
+    this->target = this->homeExit;
   }
 }
 
