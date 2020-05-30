@@ -15,6 +15,10 @@ enum behaviour { scatter, frightened, chase };
 
 class Ghost {
  protected:
+  // ---------------------------------------------------------------------------
+  // Attributes
+
+  static const char *personality[4];
   std::string name;
 
   Pacman *pacman;
@@ -24,6 +28,7 @@ class Ghost {
 
   glm::vec3 position;
   glm::vec2 target;
+
   glm::vec2 home;
   glm::vec2 homeExit;
   glm::vec2 homeEntrance;
@@ -34,32 +39,51 @@ class Ghost {
 
   static behaviour mode;
 
+  // ---------------------------------------------------------------------------
+  // Virtual methods
+
+  virtual void updateTarget() = 0;
+
+  // ---------------------------------------------------------------------------
+  // Methods
+
   void move(float delta);
   orientation oppositeDirection(orientation direction);
-  virtual void updateTarget() = 0;
   void updateDirection();
   void checkNeighbours(float distances[]);
   void checkTunnel();
   bool isBelowDoor();
 
  public:
-  static const char *personality[4];
+  // ---------------------------------------------------------------------------
+  // Getters
+  static const char *getPersonality();
+  static behaviour getMode();
 
-  void turnAround();
+  orientation getOrientation();
+  glm::vec3 getPosition();
+  bool isDead();
+
+  // ---------------------------------------------------------------------------
+  // Setters
+
   static void setMode(behaviour mode);
 
+  void setOrientation(orientation direction);
   void setIsHome(bool isHome);
   void setUseDoor(bool door);
   void setDead(bool dead);
-  void setOrientation(orientation direction);
 
-  glm::vec3 getPosition();
-  orientation getOrientation();
-  static behaviour getMode();
-  bool isDead();
+  // ---------------------------------------------------------------------------
+  // Methods
+
+  virtual void reset() = 0;
 
   void updatePosition(float delta);
-  virtual void reset() = 0;
+  void turnAround();
+
+  // ---------------------------------------------------------------------------
+  // Constructors
 
   Ghost(Pacman *pacman, Maze *maze);
   virtual ~Ghost();

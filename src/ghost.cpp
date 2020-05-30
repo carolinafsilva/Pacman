@@ -1,7 +1,7 @@
 #include "ghost.hpp"
 
 // -----------------------------------------------------------------------------
-// Private methods
+// Protected methods
 
 void Ghost::move(float delta) {
   glm::vec3 nextPosition;
@@ -67,10 +67,6 @@ void Ghost::move(float delta) {
   }
 
   this->checkTunnel();
-}
-
-void Ghost::turnAround() {
-  this->direction = this->oppositeDirection(this->direction);
 }
 
 orientation Ghost::oppositeDirection(orientation direction) {
@@ -165,6 +161,45 @@ void Ghost::checkTunnel() {
   }
 }
 
+bool Ghost::isBelowDoor() {
+  glm::vec2 center = this->maze->getCenter(this->getPosition());
+  if (fabs(center.x - this->target.x) <= 0.01f) {
+    return true;
+  }
+  return false;
+}
+
+// -----------------------------------------------------------------------------
+// Getters
+
+const char *Ghost::getPersonality() { return Ghost::personality; }
+
+behaviour Ghost::getMode() { return Ghost::mode; }
+
+orientation Ghost::getOrientation() { return this->direction; }
+
+glm::vec3 Ghost::getPosition() { return this->position; }
+
+bool Ghost::isDead() { return this->dead; }
+
+// -----------------------------------------------------------------------------
+// Setters
+
+void Ghost::setMode(behaviour mode) { Ghost::mode = mode; }
+
+void Ghost::setOrientation(orientation direction) {
+  this->direction = direction;
+}
+
+void Ghost::setIsHome(bool isHome) { this->isHome = isHome; }
+
+void Ghost::setUseDoor(bool door) { this->useDoor = door; }
+
+void Ghost::setDead(bool dead) { this->dead = dead; }
+
+// -----------------------------------------------------------------------------
+// Public methods
+
 void Ghost::updatePosition(float delta) {
   if (!this->isHome) {
     this->updateTarget();
@@ -177,35 +212,8 @@ void Ghost::updatePosition(float delta) {
   this->move(delta);
 }
 
-bool Ghost::isBelowDoor() {
-  glm::vec2 center = this->maze->getCenter(this->getPosition());
-  if (fabs(center.x - this->target.x) <= 0.01f) {
-    return true;
-  }
-  return false;
-}
-
-bool Ghost::isDead() { return this->dead; }
-
-// -----------------------------------------------------------------------------
-// Public methods
-
-void Ghost::setMode(behaviour mode) { Ghost::mode = mode; }
-
-void Ghost::setIsHome(bool isHome) { this->isHome = isHome; }
-
-void Ghost::setUseDoor(bool door) { this->useDoor = door; }
-
-void Ghost::setDead(bool dead) { this->dead = dead; }
-
-glm::vec3 Ghost::getPosition() { return this->position; }
-
-orientation Ghost::getOrientation() { return this->direction; }
-
-behaviour Ghost::getMode() { return Ghost::mode; }
-
-void Ghost::setOrientation(orientation direction) {
-  this->direction = direction;
+void Ghost::turnAround() {
+  this->direction = this->oppositeDirection(this->direction);
 }
 
 // -----------------------------------------------------------------------------
