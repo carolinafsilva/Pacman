@@ -75,7 +75,10 @@ class Maze {
        10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, -1},
       {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
+
   int numberOfDotsRemaining;
+  glm::vec2 tunnelLeft;
+  glm::vec2 tunnelRight;
 
  public:
   glm::vec2 getCenter(glm::vec3 position);
@@ -95,6 +98,10 @@ class Maze {
   glm::vec2 blockToPixel(glm::ivec2 block);
 
   glm::ivec2 pixelToBlock(glm::vec2 center);
+
+  glm::vec2 getTunnelLeft();
+
+  glm::vec2 getTunnelRight();
 
   void movePacman(glm::vec3 position);
 

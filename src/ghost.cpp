@@ -34,26 +34,31 @@ void Ghost::move(float delta) {
     }
   }
 
-  if (fabs(this->target.x - center.x) <= 0.01f &&
-      fabs(this->target.y - center.y) <= 0.01f) {
-    this->target = this->home;
+  if (fabs(this->target.x - this->homeExit.x) <= 0.01f &&
+      fabs(this->target.y - this->homeExit.y) <= 0.01f) {
+    if (fabs(this->target.x - center.x) <= 0.01f &&
+        fabs(this->target.y - center.y) <= 0.01f) {
+      this->target = this->home;
 
-    this->isHome = false;
-    this->useDoor = false;
+      this->isHome = false;
+      this->useDoor = false;
 
-    if (this->name.compare("blinky") == 0) {
-      this->direction = right;
-    }
-    if (this->name.compare("pinky") == 0) {
-      this->direction = left;
-    }
-    if (this->name.compare("inky") == 0) {
-      this->direction = right;
-    }
-    if (this->name.compare("clyde") == 0) {
-      this->direction = left;
+      if (this->name.compare("blinky") == 0) {
+        this->direction = right;
+      }
+      if (this->name.compare("pinky") == 0) {
+        this->direction = left;
+      }
+      if (this->name.compare("inky") == 0) {
+        this->direction = right;
+      }
+      if (this->name.compare("clyde") == 0) {
+        this->direction = left;
+      }
     }
   }
+
+  this->checkTunnel();
 
   // TODO: similar logic for entering house
   // if (fabs(this->target.x - center.x) <= 0.01f &&
@@ -132,6 +137,26 @@ void Ghost::checkNeighbours(float distances[]) {
   }
 }
 
+void Ghost::checkTunnel() {
+  glm::vec2 tunnel;
+  glm::vec2 newPos;
+  if (this->direction == left) {
+    tunnel = this->maze->getTunnelLeft();
+    if (fabs(this->position.x - tunnel.x) <= 0.001 &&
+        fabs(this->position.y - tunnel.y) <= 0.001) {
+      newPos = this->maze->getTunnelRight();
+      this->position = glm::vec3(newPos.x, newPos.y, this->position.z);
+    }
+  } else if (this->direction == right) {
+    tunnel = this->maze->getTunnelRight();
+    if (fabs(this->position.x - tunnel.x) <= 0.001 &&
+        fabs(this->position.y - tunnel.y) <= 0.001) {
+      newPos = this->maze->getTunnelLeft();
+      this->position = glm::vec3(newPos.x, newPos.y, this->position.z);
+    }
+  }
+}
+
 void Ghost::updatePosition(float delta) {
   if (!this->isHome) {
     this->updateTarget();
@@ -162,7 +187,9 @@ void Ghost::setUseDoor(bool door) { this->useDoor = door; }
 
 glm::vec3 Ghost::getPosition() { return this->position; }
 
-behaviour Ghost::getMode() { return this->mode; }
+orientation Ghost::getOrientation() { return this->direction; }
+
+behaviour Ghost::getMode() { return Ghost::mode; }
 
 void Ghost::setOrientation(orientation direction) {
   this->direction = direction;
@@ -177,6 +204,7 @@ const char *Ghost::personality[4] = {"blinky", "pinky", "inky", "clyde"};
 Ghost::Ghost(Pacman *pacman, Maze *maze) {
   this->pacman = pacman;
   this->maze = maze;
+  this->homeExit = glm::vec2(112, 92);
 }
 
 Ghost::~Ghost() {}
@@ -194,7 +222,7 @@ Blinky::Blinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
 Pinky::Pinky(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
   this->name = "pinky";
   this->position = glm::vec3(104, 104, 16);
-  this->target = glm::vec2(112, 92);
+  this->target = this->homeExit;
   this->home = glm::vec2(20, -20);
   this->direction = up;
   this->useDoor = true;
@@ -205,7 +233,7 @@ Inky::Inky(Pacman *pacman, Maze *maze, Ghost *blinky) : Ghost(pacman, maze) {
   this->name = "inky";
   this->blinky = (Blinky *)blinky;
   this->position = glm::vec3(88, 104, 16);
-  this->target = glm::vec2(112, 92);
+  this->target = this->homeExit;
   this->home = glm::vec2(220, 260);
   this->direction = right;
   this->useDoor = true;
@@ -216,7 +244,7 @@ Clyde::Clyde(Pacman *pacman, Maze *maze) : Ghost(pacman, maze) {
   this->name = "clyde";
   this->aroundPacman = true;
   this->position = glm::vec3(120, 104, 16);
-  this->target = glm::vec2(112, 92);
+  this->target = this->homeExit;
   this->home = glm::vec2(4, 260);
   this->direction = left;
   this->useDoor = true;
@@ -344,4 +372,34 @@ void Clyde::checkDistanceToPacman() {
 
   this->position = originalPosition;
   this->direction = originalDirection;
+}
+
+// Public methods
+
+void Blinky::reset() {
+  this->position = glm::vec3(104, 84, 16);
+  this->direction = right;
+  this->useDoor = false;
+  this->isHome = false;
+}
+void Pinky::reset() {
+  this->position = glm::vec3(104, 104, 16);
+  this->target = glm::vec2(112, 92);
+  this->direction = up;
+  this->useDoor = true;
+  this->isHome = true;
+}
+void Inky::reset() {
+  this->position = glm::vec3(88, 104, 16);
+  this->target = glm::vec2(112, 92);
+  this->direction = right;
+  this->useDoor = true;
+  this->isHome = true;
+}
+void Clyde::reset() {
+  this->position = glm::vec3(120, 104, 16);
+  this->target = glm::vec2(112, 92);
+  this->direction = left;
+  this->useDoor = true;
+  this->isHome = true;
 }
