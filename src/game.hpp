@@ -20,6 +20,8 @@
 
 class Game {
  private:
+  // ---------------------------------------------------------------------------
+  // Attributes
   Window *window;
 
   Maze *maze;
@@ -40,17 +42,25 @@ class Game {
 
   int energyzerEaten;
 
+  // ---------------------------------------------------------------------------
+  // Methods
   void setMode(long long seconds, long long timer);
+  void checkDuration(long long seconds);
+  void checkEnergyzer(long long timer);
   void checkColision();
 
  public:
+  // ---------------------------------------------------------------------------
+  // Methods
   void setup();
   void run();
   void clean();
 
-  void debugMatrix();
+  // ---------------------------------------------------------------------------
+  // Constructor
 
   Game();
+  ~Game();
 };
 
 #endif

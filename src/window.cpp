@@ -130,14 +130,7 @@ void Window::render() {
   }
 
   // Draw Pacman
-  if (this->pacman->isDead()) {
-    // reset pacman position
-    this->pacman->reset();
-    // reset ghosts position
-    for (Ghost *ghost : ghosts) {
-      ghost->reset();
-    }
-  } else {
+  if (!this->pacman->isDead()) {
     draw("pacman", this->pacman->getPosition());
     // Draw Ghosts
     for (int i = 0; i < 4; i++) {
