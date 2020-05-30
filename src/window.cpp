@@ -115,12 +115,12 @@ void Window::render() {
       glm::ivec2 block = glm::ivec2(i, j);
       if (this->maze->value(block) == 10) {
         glm::vec2 center = this->maze->blockToPixel(block);
-        glm::vec3 position = glm::vec3(center.x, center.y, 2);
+        glm::vec3 position = glm::vec3(center.x - 4, center.y - 4, 8);
         draw("food", position);
       }
       if (this->maze->value(block) == 50) {
         glm::vec2 center = this->maze->blockToPixel(block);
-        glm::vec3 position = glm::vec3(center.x - 2, center.y - 2, 6);
+        glm::vec3 position = glm::vec3(center.x - 4, center.y - 4, 8);
         draw("energyzer", position);
       }
     }
