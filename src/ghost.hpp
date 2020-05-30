@@ -44,10 +44,10 @@ class Ghost {
 
   void setIsHome(bool isHome);
   void setUseDoor(bool door);
+  void setOrientation(orientation direction);
 
   glm::vec3 getPosition();
-
-  void setOrientation(orientation direction);
+  behaviour getMode();
 
   void updatePosition(float delta);
 

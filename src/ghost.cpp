@@ -162,6 +162,8 @@ void Ghost::setUseDoor(bool door) { this->useDoor = door; }
 
 glm::vec3 Ghost::getPosition() { return this->position; }
 
+behaviour Ghost::getMode() { return this->mode; }
+
 void Ghost::setOrientation(orientation direction) {
   this->direction = direction;
 }

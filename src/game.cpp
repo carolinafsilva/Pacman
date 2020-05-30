@@ -23,7 +23,13 @@ void Game::run() {
     processInput(this->window, pacman);
 
     // update positions (pacman + ghosts)
-    pacman->updatePosition(1.0f);
+    this->pacman->updatePosition(1.0f);
+
+    // consume points
+    glm::vec2 center = this->maze->getCenter(this->pacman->getPosition());
+    glm::ivec2 block = this->maze->pixelToBlock(center);
+    this->score += this->maze->eat(block);
+
     for (Ghost *ghost : ghosts) {
       ghost->updatePosition(1.0f);
     }
