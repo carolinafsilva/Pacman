@@ -415,6 +415,7 @@ void Blinky::reset() {
   this->direction = right;
   this->useDoor = false;
   this->isHome = false;
+  this->dead = false;
 }
 void Pinky::reset() {
   this->position = glm::vec3(104, 104, 16);
@@ -422,6 +423,7 @@ void Pinky::reset() {
   this->direction = up;
   this->useDoor = true;
   this->isHome = true;
+  this->dead = false;
 }
 void Inky::reset() {
   this->position = glm::vec3(88, 104, 16);
@@ -429,6 +431,7 @@ void Inky::reset() {
   this->direction = right;
   this->useDoor = true;
   this->isHome = true;
+  this->dead = false;
 }
 void Clyde::reset() {
   this->position = glm::vec3(120, 104, 16);
@@ -436,4 +439,5 @@ void Clyde::reset() {
   this->direction = left;
   this->useDoor = true;
   this->isHome = true;
+  this->dead = false;
 }

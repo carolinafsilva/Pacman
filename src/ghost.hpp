@@ -39,7 +39,6 @@ class Ghost {
   void checkNeighbours(float distances[]);
   void checkTunnel();
   bool isBelowDoor();
-  bool isDead();
 
  public:
   static const char *personality[4];
@@ -55,6 +54,7 @@ class Ghost {
   glm::vec3 getPosition();
   orientation getOrientation();
   static behaviour getMode();
+  bool isDead();
 
   void updatePosition(float delta);
   virtual void reset() = 0;
