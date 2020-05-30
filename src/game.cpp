@@ -5,8 +5,8 @@
 void Game::setup() {
   // set random seed
   srand(time(NULL));
-  window->initialize();
-  window->transferDataToGPUMemory();
+  this->window->initialize();
+  this->window->transferDataToGPUMemory();
 }
 
 void Game::run() {
@@ -38,7 +38,7 @@ void Game::run() {
     this->setMode(seconds);
 
     // render
-    window->render();
+    this->window->render();
 
   } while (processExit(this->window));
 }
@@ -106,8 +106,8 @@ void Game::setMode(long long seconds) {
 }
 
 void Game::clean() {
-  window->deleteDataFromGPUMemory();
-  window->terminate();
+  this->window->deleteDataFromGPUMemory();
+  this->window->terminate();
 }
 
 Game::Game() {
