@@ -1,8 +1,8 @@
 .PHONY = all update run clean
 
-CC := c++
+CC := clang
 
-CFLAGS := -std=c++11 -O0 -g
+CFLAGS := -std=c++11 -O0 -g -I/usr/local/Cellar/freetype/2.10.1/include/freetype2
 LIBS := -lstdc++ -lm -lglfw -lglew -framework OpenGL
 
 SRCS := $(filter-out src/main.cpp, $(wildcard src/*.cpp))
