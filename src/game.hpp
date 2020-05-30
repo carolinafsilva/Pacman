@@ -4,9 +4,16 @@
 #include <vector>
 #include <chrono>
 
-#include "ghost.hpp"
 #include "maze.hpp"
 #include "pacman.hpp"
+
+#include "ghost.hpp"
+
+#include "blinky.hpp"
+#include "pinky.hpp"
+#include "inky.hpp"
+#include "clyde.hpp"
+
 #include "window.hpp"
 
 #define ENERGYZER_TIME 5

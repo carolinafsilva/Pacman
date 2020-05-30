@@ -8,6 +8,7 @@
 
 #include "opengl.hpp"
 #include "maze.hpp"
+
 #include "pacman.hpp"
 
 enum behaviour { scatter, frightened, chase };
@@ -26,6 +27,7 @@ class Ghost {
   glm::vec2 home;
   glm::vec2 homeExit;
   glm::vec2 homeEntrance;
+
   bool useDoor;
   bool isHome;
   bool dead;
@@ -61,51 +63,6 @@ class Ghost {
 
   Ghost(Pacman *pacman, Maze *maze);
   virtual ~Ghost();
-};
-
-class Blinky : public Ghost {
- private:
-  int ignoreScatter[19] = {20, 30, 40, 40, 40,  50,  50,  50,  60, 60,
-                           60, 80, 80, 80, 100, 100, 100, 100, 120};
-
-  void updateTarget();
-
- public:
-  Blinky(Pacman *pacman, Maze *maze);
-  void reset();
-};
-
-class Pinky : public Ghost {
- private:
-  void updateTarget();
-
- public:
-  Pinky(Pacman *pacman, Maze *maze);
-  void reset();
-};
-
-class Inky : public Ghost {
- private:
-  Blinky *blinky;
-
-  void updateTarget();
-
- public:
-  Inky(Pacman *pacman, Maze *maze, Ghost *blinky);
-  void reset();
-};
-
-class Clyde : public Ghost {
- private:
-  bool aroundPacman;
-
-  void checkDistanceToPacman();
-
-  void updateTarget();
-
- public:
-  Clyde(Pacman *pacman, Maze *maze);
-  void reset();
 };
 
 #endif
