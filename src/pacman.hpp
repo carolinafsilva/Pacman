@@ -6,6 +6,9 @@
 
 class Pacman {
  private:
+  // ---------------------------------------------------------------------------
+  // Attributes
+
   Maze *maze;
 
   orientation direction;
@@ -14,21 +17,36 @@ class Pacman {
   int lives;
   bool dead;
 
+  // ---------------------------------------------------------------------------
+  // Methods
+
   bool inTunnel();
   void checkTunnel();
 
  public:
+  // ---------------------------------------------------------------------------
+  // Getters
+
   orientation getOrientation();
   glm::vec3 getPosition();
   int getLives();
   bool isDead();
 
+  // ---------------------------------------------------------------------------
+  // Setters
+
   void setOrientation(orientation direction);
   void setIsDead(bool dead);
-  void decrementLives();
+
+  // ---------------------------------------------------------------------------
+  // Methods
 
   void updatePosition(float delta);
+  void decrementLives();
   void reset();
+
+  // ---------------------------------------------------------------------------
+  // Constructors
 
   Pacman(Maze *maze);
   ~Pacman();
