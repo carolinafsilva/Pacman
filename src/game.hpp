@@ -44,6 +44,8 @@ class Game {
 
   int score;
 
+  static int menuItem;
+
   // ---------------------------------------------------------------------------
   // Methods
   static void handleKeyboardInput(GLFWwindow *window, int key, int scancode,

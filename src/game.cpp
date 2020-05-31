@@ -24,13 +24,18 @@ void Game::processInput(Window *window, Pacman *pacman) {
   }
 
   if (Game::state == pause) {
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS ||
-        glfwGetKey(window->getWindow(), GLFW_KEY_UP) == GLFW_PRESS) {
-      // Select menu item up
-    }
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS ||
-        glfwGetKey(window->getWindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
-      // Select menu item down
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_ENTER) == GLFW_PRESS) {
+      switch (this->menuItem) {
+        case 0:
+          Game::state = active;
+          break;
+        case 1:
+          // TODO: implement reset game
+          break;
+        case 2:
+          glfwSetWindowShouldClose(this->window->getWindow(), 1);
+          break;
+      }
     }
   }
 }
@@ -42,6 +47,19 @@ void Game::handleKeyboardInput(GLFWwindow *window, int key, int scancode,
       Game::state = pause;
     } else {
       Game::state = active;
+    }
+  }
+  if (Game::state == pause) {
+    if ((key == GLFW_KEY_W && action == GLFW_PRESS) ||
+        (key == GLFW_KEY_UP && action == GLFW_PRESS)) {
+      Game::menuItem = (Game::menuItem - 1) % 3;
+      if (Game::menuItem < 0) {
+        Game::menuItem += 3;
+      }
+    }
+    if ((key == GLFW_KEY_S && action == GLFW_PRESS) ||
+        (key == GLFW_KEY_DOWN && action == GLFW_PRESS)) {
+      Game::menuItem = (Game::menuItem + 1) % 3;
     }
   }
 }
@@ -278,10 +296,10 @@ void Game::clean() {
 // Initialization
 
 gameState Game::state = active;
+int Game::menuItem = 0;
 
 // -----------------------------------------------------------------------------
 // Constructors
-
 Game::Game() {
   this->maze = new Maze();
 
@@ -294,7 +312,7 @@ Game::Game() {
 
   this->window =
       new Window(this->maze, this->pacman, this->ghosts, this->startTime,
-                 &(this->lastEnergyzerTime), &(this->score));
+                 &(this->lastEnergyzerTime), &(this->score), &(Game::menuItem));
 
   this->startTime = std::chrono::steady_clock::now();
   this->lastEnergyzerTime = std::chrono::steady_clock::now();

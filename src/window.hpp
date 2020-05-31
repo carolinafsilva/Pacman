@@ -42,6 +42,7 @@ class Window {
   static glm::vec2 mazeProportion;
   static float headerProportion;
   int *score;
+  int *menuItem;
   static int width, height;
 
   std::chrono::steady_clock::time_point lastTime;
@@ -69,7 +70,8 @@ class Window {
 
   Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts,
          std::chrono::steady_clock::time_point startTime,
-         std::chrono::steady_clock::time_point *lastEnergyzerTime, int *score);
+         std::chrono::steady_clock::time_point *lastEnergyzerTime, int *score,
+         int *menuItem);
 };
 
 #endif

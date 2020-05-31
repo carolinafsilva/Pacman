@@ -74,13 +74,28 @@ void Window::drawMenu() {
   SheetRenderer->DrawSprite(myTexture, glm::vec2(0.0f, 0.0f),
                             glm::vec2(MAZE_WIDTH, MAZE_HEIGHT));
 
-  Text->Load("assets/fonts/title.ttf", 24);
+  glm::vec3 highlightColor = glm::vec3(1.0f, 1.0f, 0.0f);
+  // Text->Load("assets/fonts/title.ttf", 24);
   Text->RenderText("PACMAN", 50.0f, 30.0f, glm::vec2(1.0f, 1.0f),
-                   glm::vec3(1.0f, 1.0f, 0.0f));
-  Text->Load("assets/fonts/regular_text.ttf", 24);
+                   highlightColor);
+  // Text->Load("assets/fonts/regular_text.ttf", 24);
   Text->RenderText("Resume", 50.0f, 110.0f, glm::vec2(0.625f, 0.8f));
   Text->RenderText("New Game", 50.0f, 150.0f, glm::vec2(0.625f, 0.8f));
   Text->RenderText("Exit", 50.0f, 190.0f, glm::vec2(0.625f, 0.8f));
+  switch (*(this->menuItem)) {
+    case 0:
+      Text->RenderText("Resume", 50.0f, 110.0f, glm::vec2(0.625f, 0.8f),
+                       highlightColor);
+      break;
+    case 1:
+      Text->RenderText("New Game", 50.0f, 150.0f, glm::vec2(0.625f, 0.8f),
+                       highlightColor);
+      break;
+    case 2:
+      Text->RenderText("Exit", 50.0f, 190.0f, glm::vec2(0.625f, 0.8f),
+                       highlightColor);
+      break;
+  }
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
@@ -227,6 +242,7 @@ void Window::render(gameState state) {
     glm::vec2 size =
         glm::vec2(this->pacman->getPosition().z, this->pacman->getPosition().z);
     draw("pacman", position, size, rotation, PACMAN_SHEET, pacmanSprite);
+
     // Draw Ghosts
     for (int i = 0; i < 4; i++) {
       std::string dir;
@@ -271,11 +287,6 @@ void Window::render(gameState state) {
         }
       }
     }
-    if (milliseconds >= SPRITE_DURATION) {
-      this->pacmanSprite = (this->pacmanSprite + 1) % PACMAN_SHEET;
-      this->ghostSprite = (this->ghostSprite + 1) % GHOST_SHEET;
-      this->lastTime = now;
-    }
   }
 
   glViewport((this->width - new_width) / 2, lives_height + maze_height,
@@ -283,14 +294,26 @@ void Window::render(gameState state) {
   Text->RenderText("HIGH SCORE", 72.0f, 0.0f, glm::vec2(1.0 / 3, 3.0f));
   prettyPrintScore();
 
-  // verify is game is paused
-  if (state == pause) {
-    glViewport(32.0 / MAZE_WIDTH * new_width + (this->width - new_width) / 2,
-               lives_height + (32.0 / MAZE_HEIGHT * this->height),
-               new_width - 32.0 / MAZE_WIDTH * new_width * 2,
-               this->height - lives_height - header_height -
-                   (32.0 / MAZE_HEIGHT * this->height * 2));
-    drawMenu();
+  switch (state) {
+    case start:
+      break;
+    case active:
+      if (!this->pacman->isDead() && milliseconds >= SPRITE_DURATION) {
+        this->pacmanSprite = (this->pacmanSprite + 1) % PACMAN_SHEET;
+        this->ghostSprite = (this->ghostSprite + 1) % GHOST_SHEET;
+        this->lastTime = now;
+      }
+      break;
+    case pause:
+      glViewport(32.0 / MAZE_WIDTH * new_width + (this->width - new_width) / 2,
+                 lives_height + (32.0 / MAZE_HEIGHT * this->height),
+                 new_width - 32.0 / MAZE_WIDTH * new_width * 2,
+                 this->height - lives_height - header_height -
+                     (32.0 / MAZE_HEIGHT * this->height * 2));
+      drawMenu();
+      break;
+    case over:
+      break;
   }
 
   // swap the color buffer
@@ -323,13 +346,14 @@ int Window::height = SCREEN_HEIGHT;
 Window::Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts,
                std::chrono::steady_clock::time_point startTime,
                std::chrono::steady_clock::time_point *lastEnergyzerTime,
-               int *score) {
+               int *score, int *menuItem) {
   this->maze = maze;
   this->pacman = pacman;
   this->ghosts = ghosts;
   this->lastTime = startTime;
   this->lastEnergyzerTime = lastEnergyzerTime;
   this->score = score;
+  this->menuItem = menuItem;
   this->pacmanSprite = 0;
   this->ghostSprite = 0;
 }
