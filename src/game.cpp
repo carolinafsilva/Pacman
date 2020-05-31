@@ -279,7 +279,11 @@ void Game::run() {
 
   do {
     // set state
-    Game::state = over;
+    if (this->maze->getDotsRemaining() == 0) {
+      Game::state = win;
+    } else {
+      Game::state = over;
+    }
 
     // render window
     this->window->render(Game::state);

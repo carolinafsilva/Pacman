@@ -13,7 +13,7 @@
 #include <vector>
 #include <iostream>
 
-enum gameState { start, active, pause, over };
+enum gameState { start, active, pause, over, win };
 
 #define SCREEN_WIDTH 224
 #define SCREEN_HEIGHT 288
