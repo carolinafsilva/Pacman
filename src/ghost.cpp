@@ -213,7 +213,9 @@ void Ghost::updatePosition(float delta) {
 }
 
 void Ghost::turnAround() {
-  this->direction = this->oppositeDirection(this->direction);
+  if (!this->isDead()) {
+    this->direction = this->oppositeDirection(this->direction);
+  }
 }
 
 // -----------------------------------------------------------------------------
