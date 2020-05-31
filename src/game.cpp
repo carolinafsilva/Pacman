@@ -181,11 +181,19 @@ void Game::checkColision() {
 void Game::resetGame() {
   this->maze->reset();
   this->pacman->reset(true);
+  Ghost::setMode(scatter);
   for (Ghost *ghost : ghosts) {
     ghost->reset();
   }
   this->state = start;
   this->score = 0;
+  this->startTime = std::chrono::steady_clock::now();
+  this->lastEnergyzerTime = std::chrono::steady_clock::now();
+
+  this->modeTracker = 0;
+  this->lastModeTracker = false;
+
+  this->energyzerEaten = 0;
 }
 // -----------------------------------------------------------------------------
 // Public methods
