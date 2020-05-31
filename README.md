@@ -10,6 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 This software requires the following OpenGL libraries to be installed on the system:
 
+- freetype
 - glfw
 - glew
 - glm
