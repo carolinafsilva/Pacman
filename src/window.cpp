@@ -157,8 +157,7 @@ void Window::transferDataToGPUMemory() {
 
 void Window::render(gameState state) {
   // MacOS retina screen fix
-  int width, height;
-  glfwGetFramebufferSize(window, &width, &height);
+  glfwGetFramebufferSize(window, &(this->width), &(this->height));
 
   std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
 
