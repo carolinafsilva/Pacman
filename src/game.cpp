@@ -218,7 +218,7 @@ void Game::run() {
     // process input
     processInput(this->window, pacman);
 
-    if (Game::state != pause) {
+    if (Game::state != pause && Game::state != over && Game::state != win) {
       // get seconds since start
       long long seconds = std::chrono::duration_cast<std::chrono::seconds>(
                               std::chrono::steady_clock::now() - startTime)
@@ -291,25 +291,20 @@ void Game::run() {
         }
       }
 
+      // handle game end
+      if (this->pacman->getLives() == 0) {
+        Game::state = over;
+      }
+      if (this->maze->getDotsRemaining() == 0) {
+        Game::state = win;
+      }
+
+      // render window
+      this->window->render(Game::state);
     } else {
       // render window
       this->window->render(Game::state);
     }
-
-  } while (processExit(this->window) && !(this->maze->getDotsRemaining() == 0 ||
-                                          this->pacman->getLives() == 0));
-
-  do {
-    // set state
-    if (this->maze->getDotsRemaining() == 0) {
-      Game::state = win;
-    } else {
-      Game::state = over;
-    }
-
-    // render window
-    this->window->render(Game::state);
-
   } while (processExit(this->window));
 }
 
