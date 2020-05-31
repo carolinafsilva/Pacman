@@ -277,7 +277,7 @@ void Window::render(gameState state) {
   prettyPrintScore();
 
   // verify is game is paused
-  if (false) {
+  if (state == pause) {
     glViewport(32, 48, 160, 200);
     drawMenu();
   }
