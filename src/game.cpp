@@ -1,9 +1,51 @@
 #include "game.hpp"
 
-#include "input.hpp"
-
 // -----------------------------------------------------------------------------
 // Private methods
+
+void Game::processInput(Window *window, Pacman *pacman) {
+  if (glfwGetKey(window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+    if (Game::state != pause) {
+      Game::state = pause;
+    } else {
+      Game::state = active;
+    }
+  }
+
+  if (Game::state == active) {
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS ||
+        glfwGetKey(window->getWindow(), GLFW_KEY_UP) == GLFW_PRESS) {
+      pacman->setOrientation(up);
+    }
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS ||
+        glfwGetKey(window->getWindow(), GLFW_KEY_LEFT) == GLFW_PRESS) {
+      pacman->setOrientation(left);
+    }
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS ||
+        glfwGetKey(window->getWindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
+      pacman->setOrientation(down);
+    }
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS ||
+        glfwGetKey(window->getWindow(), GLFW_KEY_RIGHT) == GLFW_PRESS) {
+      pacman->setOrientation(right);
+    }
+  }
+
+  if (Game::state == pause) {
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS ||
+        glfwGetKey(window->getWindow(), GLFW_KEY_UP) == GLFW_PRESS) {
+      // Select menu item up
+    }
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS ||
+        glfwGetKey(window->getWindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
+      // Select menu item down
+    }
+  }
+}
+
+bool Game::processExit(Window *window) {
+  return !glfwWindowShouldClose(window->getWindow());
+}
 
 void Game::setMode(long long seconds, long long timer) {
   this->checkDuration(seconds);
@@ -128,92 +170,97 @@ void Game::setup() {
 }
 
 void Game::run() {
-  // Active state
   do {
-    // get seconds since start
-    long long seconds = std::chrono::duration_cast<std::chrono::seconds>(
-                            std::chrono::steady_clock::now() - startTime)
-                            .count();
-    // Start
-    while (seconds <= START_STATE) {
-      // set state
-      this->state = start;
-
-      // get seconds since start
-      seconds = std::chrono::duration_cast<std::chrono::seconds>(
-                    std::chrono::steady_clock::now() - startTime)
-                    .count();
-
-      // render window
-      this->window->render(this->state);
-    }
-
-    // set state
-    this->state = active;
-
     // process input
     processInput(this->window, pacman);
 
-    // update positions
-    this->pacman->updatePosition(1.0f);
-    for (Ghost *ghost : ghosts) {
-      ghost->updatePosition(1.0f);
-    }
+    if (Game::state != pause) {
+      // get seconds since start
+      long long seconds = std::chrono::duration_cast<std::chrono::seconds>(
+                              std::chrono::steady_clock::now() - startTime)
+                              .count();
+      // Start
+      while (seconds <= START_STATE) {
+        // set state
+        Game::state = start;
 
-    // handle colisions
-    this->checkColision();
+        // get seconds since start
+        seconds = std::chrono::duration_cast<std::chrono::seconds>(
+                      std::chrono::steady_clock::now() - startTime)
+                      .count();
 
-    // consume points
-    glm::vec2 center = this->maze->getCenter(this->pacman->getPosition());
-    glm::ivec2 block = this->maze->pixelToBlock(center);
-
-    int points = this->maze->eat(block);
-
-    if (points > 0) {
-      this->score += points;
-      this->maze->decrementDotsRemaining();
-      if (points == 50) {
-        this->lastEnergyzerTime = std::chrono::steady_clock::now();
-        for (Ghost *ghost : this->ghosts) {
-          ghost->turnAround();
-        }
-        this->energyzerEaten += 1;
+        // render window
+        this->window->render(Game::state);
       }
-    }
 
-    // get seconds since enegizer eaten
-    long long timer = std::chrono::duration_cast<std::chrono::seconds>(
-                          std::chrono::steady_clock::now() - lastEnergyzerTime)
-                          .count();
+      // set state
+      Game::state = active;
 
-    // set mode
-    this->setMode(seconds, timer);
-
-    // render window
-    this->window->render(this->state);
-
-    // handle pacman death
-    if (this->pacman->isDead()) {
-      // reset pacman
-      this->pacman->reset();
-      this->pacman->setIsDead(false);
-      this->pacman->decrementLives();
-      // reset ghosts
+      // update positions
+      this->pacman->updatePosition(1.0f);
       for (Ghost *ghost : ghosts) {
-        ghost->reset();
+        ghost->updatePosition(1.0f);
       }
+
+      // handle colisions
+      this->checkColision();
+
+      // consume points
+      glm::vec2 center = this->maze->getCenter(this->pacman->getPosition());
+      glm::ivec2 block = this->maze->pixelToBlock(center);
+
+      int points = this->maze->eat(block);
+
+      if (points > 0) {
+        this->score += points;
+        this->maze->decrementDotsRemaining();
+        if (points == 50) {
+          this->lastEnergyzerTime = std::chrono::steady_clock::now();
+          for (Ghost *ghost : this->ghosts) {
+            ghost->turnAround();
+          }
+          this->energyzerEaten += 1;
+        }
+      }
+
+      // get seconds since enegizer eaten
+      long long timer =
+          std::chrono::duration_cast<std::chrono::seconds>(
+              std::chrono::steady_clock::now() - lastEnergyzerTime)
+              .count();
+
+      // set mode
+      this->setMode(seconds, timer);
+
+      // render window
+      this->window->render(Game::state);
+
+      // handle pacman death
+      if (this->pacman->isDead()) {
+        // reset pacman
+        this->pacman->reset();
+        this->pacman->setIsDead(false);
+        this->pacman->decrementLives();
+        // reset ghosts
+        for (Ghost *ghost : ghosts) {
+          ghost->reset();
+        }
+      }
+
+    } else {
+      // render window
+      this->window->render(Game::state);
     }
 
   } while (processExit(this->window) && !(this->maze->getDotsRemaining() == 0 ||
                                           this->pacman->getLives() == 0));
 
-  // Over state
   do {
     // set state
-    this->state = over;
+    Game::state = over;
 
     // render window
-    this->window->render(this->state);
+    this->window->render(Game::state);
 
   } while (processExit(this->window));
 }
@@ -222,6 +269,11 @@ void Game::clean() {
   this->window->deleteDataFromGPUMemory();
   this->window->terminate();
 }
+
+// -----------------------------------------------------------------------------
+// Initialization
+
+gameState Game::state = active;
 
 // -----------------------------------------------------------------------------
 // Constructors
@@ -239,8 +291,6 @@ Game::Game() {
   this->window =
       new Window(this->maze, this->pacman, this->ghosts, this->startTime,
                  &(this->lastEnergyzerTime), &(this->score));
-
-  this->state = start;
 
   this->startTime = std::chrono::steady_clock::now();
   this->lastEnergyzerTime = std::chrono::steady_clock::now();

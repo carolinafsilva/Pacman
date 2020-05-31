@@ -155,7 +155,7 @@ void Window::transferDataToGPUMemory() {
   Text->Load("assets/fonts/regular_text.ttf", 24);
 }
 
-void Window::render(state state) {
+void Window::render(gameState state) {
   // MacOS retina screen fix
   int width, height;
   glfwGetFramebufferSize(window, &width, &height);
@@ -285,7 +285,7 @@ void Window::render(state state) {
   prettyPrintScore();
 
   // verify is game is paused
-  if (false) {
+  if (state == pause) {
     glViewport(32.0 / MAZE_WIDTH * new_width + (this->width - new_width) / 2,
                lives_height + (32.0 / MAZE_HEIGHT * this->height),
                new_width - 32.0 / MAZE_WIDTH * new_width * 2,
