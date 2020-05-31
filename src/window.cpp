@@ -51,6 +51,9 @@ void Window::transferTextures() {
   ResourceManager::LoadTexture("assets/images/energyzer.png", true,
                                "energyzer");
   ResourceManager::LoadTexture("assets/images/Pacman.png", true, "life");
+  ResourceManager::LoadTexture("assets/images/Pacman_start.png", true,
+                               "pacman_start");
+  ResourceManager::LoadTexture("assets/images/maze_win.png", true, "maze_win");
 }
 
 void Window::draw(std::string textureName, glm::vec2 position, glm::vec2 size,
@@ -61,7 +64,47 @@ void Window::draw(std::string textureName, glm::vec2 position, glm::vec2 size,
                             spriteNumber);
 }
 
+void Window::drawLives() {
+  glViewport((this->width - this->new_width) / 2, 0, this->new_width,
+             this->lives_height);
+
+  // Draw lives
+  for (int i = 0; i < this->pacman->getLives() - 1; i++) {
+    draw("life", glm::vec2(16 * i, 0.0), glm::vec2(16, MAZE_HEIGHT - 4));
+  }
+}
+
+void Window::drawHeader() {
+  glViewport((this->width - this->new_width) / 2,
+             this->lives_height + this->maze_height, this->new_width,
+             this->header_height);
+  Text->RenderText("HIGH SCORE", 72.0f, 0.0f, glm::vec2(1.0 / 3, 3.0f));
+  prettyPrintScore();
+}
+
+void Window::drawPoints() {
+  for (int i = 0; i < BLOCK_L; i++) {
+    for (int j = 0; j < BLOCK_C; j++) {
+      glm::ivec2 block = glm::ivec2(i, j);
+      if (this->maze->value(block) == 10) {
+        glm::vec2 center = this->maze->blockToPixel(block);
+        glm::vec2 position = glm::vec2(center.x - 4, center.y - 4);
+        glm::vec2 size = glm::vec2(8, 8);
+        draw("food", position, size);
+      }
+      if (this->maze->value(block) == 50) {
+        glm::vec2 center = this->maze->blockToPixel(block);
+        glm::vec2 position = glm::vec2(center.x - 4, center.y - 4);
+        glm::vec2 size = glm::vec2(8, 8);
+        draw("energyzer", position, size);
+      }
+    }
+  }
+}
+
 void Window::drawMaze() {
+  glViewport((this->width - this->new_width) / 2, this->lives_height,
+             this->new_width, this->maze_height);
   Texture2D myTexture;
   myTexture = ResourceManager::GetTexture("maze");
   SheetRenderer->DrawSprite(myTexture, glm::vec2(0, 0),
@@ -70,14 +113,17 @@ void Window::drawMaze() {
 }
 
 void Window::drawMenu() {
+  glViewport(32.0 / MAZE_WIDTH * new_width + (this->width - new_width) / 2,
+             this->lives_height + (32.0 / MAZE_HEIGHT * this->height),
+             new_width - 32.0 / MAZE_WIDTH * new_width * 2,
+             this->height - this->lives_height - header_height -
+                 (32.0 / MAZE_HEIGHT * this->height * 2));
   Texture2D myTexture = ResourceManager::GetTexture("menu");
   SheetRenderer->DrawSprite(myTexture, glm::vec2(0.0f, 0.0f),
                             glm::vec2(MAZE_WIDTH, MAZE_HEIGHT));
-
-  glm::vec3 highlightColor = glm::vec3(1.0f, 1.0f, 0.0f);
   // Text->Load("assets/fonts/title.ttf", 24);
   Text->RenderText("PACMAN", 50.0f, 30.0f, glm::vec2(1.0f, 1.0f),
-                   highlightColor);
+                   this->highlightColor);
   // Text->Load("assets/fonts/regular_text.ttf", 24);
   Text->RenderText("Resume", 50.0f, 110.0f, glm::vec2(0.625f, 0.8f));
   Text->RenderText("New Game", 50.0f, 150.0f, glm::vec2(0.625f, 0.8f));
@@ -85,19 +131,100 @@ void Window::drawMenu() {
   switch (*(this->menuItem)) {
     case 0:
       Text->RenderText("Resume", 50.0f, 110.0f, glm::vec2(0.625f, 0.8f),
-                       highlightColor);
+                       this->highlightColor);
       break;
     case 1:
       Text->RenderText("New Game", 50.0f, 150.0f, glm::vec2(0.625f, 0.8f),
-                       highlightColor);
+                       this->highlightColor);
       break;
     case 2:
       Text->RenderText("Exit", 50.0f, 190.0f, glm::vec2(0.625f, 0.8f),
-                       highlightColor);
+                       this->highlightColor);
       break;
   }
 }
 
+void Window::drawPacmanAnimation() {
+  float rotation;
+  switch (this->pacman->getOrientation()) {
+    case up:
+      rotation = 90.0f;
+      break;
+    case left:
+      rotation = 0.0f;
+      break;
+    case down:
+      rotation = -90.0f;
+      break;
+    case right:
+      rotation = 180.0f;
+      break;
+  }
+
+  glm::vec2 position =
+      glm::vec2(this->pacman->getPosition().x, this->pacman->getPosition().y);
+  glm::vec2 size =
+      glm::vec2(this->pacman->getPosition().z, this->pacman->getPosition().z);
+  draw("pacman", position, size, rotation, PACMAN_SHEET, pacmanSprite);
+}
+
+void Window::drawPacmanStart() {
+  Texture2D myTexture;
+  myTexture = ResourceManager::GetTexture("pacman_start");
+  glm::vec2 position =
+      glm::vec2(this->pacman->getPosition().x, this->pacman->getPosition().y);
+  glm::vec2 size =
+      glm::vec2(this->pacman->getPosition().z, this->pacman->getPosition().z);
+
+  SheetRenderer->DrawSprite(myTexture, position, size, 0.0f,
+                            glm::vec3(1.0f, 1.0f, 1.0f));
+}
+
+void Window::drawGhosts() {
+  for (int i = 0; i < 4; i++) {
+    std::string dir;
+    switch (this->ghosts[i]->getOrientation()) {
+      case up:
+        dir = "_up";
+        break;
+      case left:
+        dir = "_left";
+        break;
+      case down:
+        dir = "_down";
+        break;
+      case right:
+        dir = "_right";
+        break;
+    }
+
+    std::string sprite;
+    glm::vec2 position = glm::vec2(this->ghosts[i]->getPosition().x,
+                                   this->ghosts[i]->getPosition().y);
+    glm::vec2 size = glm::vec2(this->ghosts[i]->getPosition().z,
+                               this->ghosts[i]->getPosition().z);
+    if (this->ghosts[i]->isDead()) {
+      sprite = "eyes";
+      draw(sprite.append(dir), position, size);
+    } else {
+      if (Ghost::getMode() != frightened) {
+        sprite = Ghost::getPersonality()[i];
+        draw(sprite.append(dir), position, size);
+      } else {
+        long long frightened_time =
+            std::chrono::duration_cast<std::chrono::seconds>(
+                this->now - *(this->lastEnergyzerTime))
+                .count();
+        if (frightened_time >= TIME_UNTIL_FLASH) {
+          draw("frightened_flash", position, size, 0.0f, GHOST_SHEET,
+               this->ghostSprite);
+        } else {
+          draw("frightened", position, size);
+        }
+      }
+    }
+  }
+}
 // glfw: whenever the window size changed (by OS or user resize) this callback
 // function executes
 // -----------------------------------------------------------------------------
@@ -174,145 +301,60 @@ void Window::render(gameState state) {
   // MacOS retina screen fix
   glfwGetFramebufferSize(window, &(this->width), &(this->height));
 
-  std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+  this->now = std::chrono::steady_clock::now();
 
   long long milliseconds =
-      std::chrono::duration_cast<std::chrono::milliseconds>(now -
+      std::chrono::duration_cast<std::chrono::milliseconds>(this->now -
                                                             this->lastTime)
           .count();
 
   // Clean window
   glClear(GL_COLOR_BUFFER_BIT);
-  int maze_height = this->height * mazeProportion.y;
-  int header_height = this->height * headerProportion;
-  int lives_height = this->height - maze_height - header_height;
-  int new_width = this->height * proportion;
 
-  glViewport((this->width - new_width) / 2, 0, new_width, lives_height);
+  // update sizes
+  maze_height = this->height * this->mazeProportion.y;
+  header_height = this->height * this->headerProportion;
+  lives_height = this->height - this->maze_height - this->header_height;
+  new_width = this->height * this->proportion;
 
-  // Draw lives
-  for (int i = 0; i < this->pacman->getLives() - 1; i++) {
-    draw("life", glm::vec2(16 * i, 0.0), glm::vec2(16, MAZE_HEIGHT - 4));
-  }
-
-  glViewport((this->width - new_width) / 2, lives_height, new_width,
-             maze_height);
-
+  drawLives();
+  drawHeader();
   // Draw Maze
   drawMaze();
 
   // Draw Points
-  for (int i = 0; i < BLOCK_L; i++) {
-    for (int j = 0; j < BLOCK_C; j++) {
-      glm::ivec2 block = glm::ivec2(i, j);
-      if (this->maze->value(block) == 10) {
-        glm::vec2 center = this->maze->blockToPixel(block);
-        glm::vec2 position = glm::vec2(center.x - 4, center.y - 4);
-        glm::vec2 size = glm::vec2(8, 8);
-        draw("food", position, size);
-      }
-      if (this->maze->value(block) == 50) {
-        glm::vec2 center = this->maze->blockToPixel(block);
-        glm::vec2 position = glm::vec2(center.x - 4, center.y - 4);
-        glm::vec2 size = glm::vec2(8, 8);
-        draw("energyzer", position, size);
-      }
-    }
-  }
-
-  // Draw Pacman
-  float rotation;
-  if (!this->pacman->isDead()) {
-    switch (this->pacman->getOrientation()) {
-      case up:
-        rotation = 90.0f;
-        break;
-      case left:
-        rotation = 0.0f;
-        break;
-      case down:
-        rotation = -90.0f;
-        break;
-      case right:
-        rotation = 180.0f;
-        break;
-    }
-    glm::vec2 position =
-        glm::vec2(this->pacman->getPosition().x, this->pacman->getPosition().y);
-    glm::vec2 size =
-        glm::vec2(this->pacman->getPosition().z, this->pacman->getPosition().z);
-    draw("pacman", position, size, rotation, PACMAN_SHEET, pacmanSprite);
-
-    // Draw Ghosts
-    for (int i = 0; i < 4; i++) {
-      std::string dir;
-      switch (this->ghosts[i]->getOrientation()) {
-        case up:
-          dir = "_up";
-          break;
-        case left:
-          dir = "_left";
-          break;
-        case down:
-          dir = "_down";
-          break;
-        case right:
-          dir = "_right";
-          break;
-      }
-
-      std::string sprite;
-      glm::vec2 position = glm::vec2(this->ghosts[i]->getPosition().x,
-                                     this->ghosts[i]->getPosition().y);
-      glm::vec2 size = glm::vec2(this->ghosts[i]->getPosition().z,
-                                 this->ghosts[i]->getPosition().z);
-      if (this->ghosts[i]->isDead()) {
-        sprite = "eyes";
-        draw(sprite.append(dir), position, size);
-      } else {
-        if (Ghost::getMode() != frightened) {
-          sprite = Ghost::getPersonality()[i];
-          draw(sprite.append(dir), position, size);
-        } else {
-          long long frightened_time =
-              std::chrono::duration_cast<std::chrono::seconds>(
-                  now - *(this->lastEnergyzerTime))
-                  .count();
-          if (frightened_time >= TIME_UNTIL_FLASH) {
-            draw("frightened_flash", position, size, 0.0f, GHOST_SHEET,
-                 this->ghostSprite);
-          } else {
-            draw("frightened", position, size);
-          }
-        }
-      }
-    }
-  }
-
-  glViewport((this->width - new_width) / 2, lives_height + maze_height,
-             new_width, header_height);
-  Text->RenderText("HIGH SCORE", 72.0f, 0.0f, glm::vec2(1.0 / 3, 3.0f));
-  prettyPrintScore();
+  drawPoints();
 
   switch (state) {
     case start:
+      // TODO: text render "Ready!"
+      Text->RenderText("Ready!", 84.0f, 158.0f, glm::vec2(0.4f, 0.50f),
+                       this->highlightColor);
+      drawPacmanStart();
       break;
     case active:
-      if (!this->pacman->isDead() && milliseconds >= SPRITE_DURATION) {
-        this->pacmanSprite = (this->pacmanSprite + 1) % PACMAN_SHEET;
-        this->ghostSprite = (this->ghostSprite + 1) % GHOST_SHEET;
-        this->lastTime = now;
+      if (!this->pacman->isDead()) {
+        // Draw Pacman animation
+        drawPacmanAnimation();
+        // Draw Ghosts
+        drawGhosts();
+        if (milliseconds >= SPRITE_DURATION) {
+          this->pacmanSprite = (this->pacmanSprite + 1) % PACMAN_SHEET;
+          this->ghostSprite = (this->ghostSprite + 1) % GHOST_SHEET;
+          this->lastTime = now;
+        }
       }
       break;
     case pause:
-      glViewport(32.0 / MAZE_WIDTH * new_width + (this->width - new_width) / 2,
-                 lives_height + (32.0 / MAZE_HEIGHT * this->height),
-                 new_width - 32.0 / MAZE_WIDTH * new_width * 2,
-                 this->height - lives_height - header_height -
-                     (32.0 / MAZE_HEIGHT * this->height * 2));
+      // Draw Pacman animation
+      drawPacmanAnimation();
+      // Draw Ghosts
+      drawGhosts();
       drawMenu();
       break;
     case over:
+      Text->RenderText("Game Over!", 76.0f, 158.0f, glm::vec2(0.3f, 0.50f),
+                       this->highlightColor);
       break;
   }
 
@@ -354,6 +396,7 @@ Window::Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts,
   this->lastEnergyzerTime = lastEnergyzerTime;
   this->score = score;
   this->menuItem = menuItem;
+  this->highlightColor = glm::vec3(1.0f, 1.0f, 0.0f);
   this->pacmanSprite = 0;
   this->ghostSprite = 0;
 }

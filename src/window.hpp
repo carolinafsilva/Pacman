@@ -44,16 +44,28 @@ class Window {
   int *score;
   int *menuItem;
   static int width, height;
+  int maze_height;
+  int header_height;
+  int lives_height;
+  int new_width;
+  glm::vec3 highlightColor;
 
   std::chrono::steady_clock::time_point lastTime;
   std::chrono::steady_clock::time_point *lastEnergyzerTime;
+  std::chrono::steady_clock::time_point now;
 
   void transferTextures();
 
   void draw(std::string textureName, glm::vec2 position, glm::vec2 size,
             float rotation = 0.0f, int totalSprites = 1, int spriteNumber = 0);
+  void drawLives();
+  void drawHeader();
+  void drawPoints();
   void drawMaze();
   void drawMenu();
+  void drawPacmanStart();
+  void drawPacmanAnimation();
+  void drawGhosts();
 
   static void framebuffer_size_callback(GLFWwindow *window, int width,
                                         int height);
