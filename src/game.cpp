@@ -30,7 +30,7 @@ void Game::processInput(Window *window, Pacman *pacman) {
           Game::state = active;
           break;
         case 1:
-          // TODO: implement reset game
+          this->resetGame();
           break;
         case 2:
           glfwSetWindowShouldClose(this->window->getWindow(), 1);
@@ -178,6 +178,15 @@ void Game::checkColision() {
   }
 }
 
+void Game::resetGame() {
+  this->maze->reset();
+  this->pacman->reset(true);
+  for (Ghost *ghost : ghosts) {
+    ghost->reset();
+  }
+  this->state = start;
+  this->score = 0;
+}
 // -----------------------------------------------------------------------------
 // Public methods
 
@@ -260,7 +269,7 @@ void Game::run() {
       // handle pacman death
       if (this->pacman->isDead()) {
         // reset pacman
-        this->pacman->reset();
+        this->pacman->reset(false);
         this->pacman->setIsDead(false);
         this->pacman->decrementLives();
         // reset ghosts

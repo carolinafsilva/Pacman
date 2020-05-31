@@ -43,7 +43,7 @@ class Pacman {
 
   void updatePosition(float delta);
   void decrementLives();
-  void reset();
+  void reset(bool restart);
 
   // ---------------------------------------------------------------------------
   // Constructors

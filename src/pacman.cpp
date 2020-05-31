@@ -120,9 +120,13 @@ void Pacman::updatePosition(float delta) {
 
 void Pacman::decrementLives() { this->lives -= 1; }
 
-void Pacman::reset() {
+void Pacman::reset(bool restart) {
   this->position = glm::vec3(104.0f, 180.0f, 16.0f);
   this->direction = left;
+  if (restart) {
+    this->lives = 4;
+    this->dead = false;
+  }
 }
 
 // -----------------------------------------------------------------------------
