@@ -135,16 +135,15 @@ void Game::checkEnergyzer(long long timer) {
 
 void Game::checkColision() {
   glm::vec2 pacmanCenter = this->maze->getCenter(this->pacman->getPosition());
-  glm::ivec2 pacmanBlock = this->maze->pixelToBlock(pacmanCenter);
-
   glm::vec2 ghostCenter;
-  glm::ivec2 ghostBlock;
 
   for (Ghost *ghost : ghosts) {
     ghostCenter = this->maze->getCenter(ghost->getPosition());
-    ghostBlock = this->maze->pixelToBlock(ghostCenter);
 
-    if (ghostBlock.x == pacmanBlock.x && ghostBlock.y == pacmanBlock.y) {
+    if (ghostCenter.x == pacmanCenter.x &&
+            fabs(ghostCenter.y - pacmanCenter.y) <= 8.0f ||
+        ghostCenter.y == pacmanCenter.y &&
+            fabs(ghostCenter.x - pacmanCenter.x) <= 8.0f) {
       if (Ghost::getMode() != frightened && !ghost->isDead()) {
         this->startTime = std::chrono::steady_clock::now();
         this->energyzerEaten = 0;
