@@ -35,6 +35,7 @@ class Window {
   SpriteSheetRenderer *SheetRenderer;
   unsigned int VBO, Maze_VAO, Pacman_VAO, EBO;
   int pacmanSprite, ghostSprite;
+  float proportion;
   int *score;
 
   std::chrono::steady_clock::time_point lastTime;
@@ -45,6 +46,7 @@ class Window {
   void draw(std::string textureName, glm::vec2 position, glm::vec2 size,
             float rotation = 0.0f, int totalSprites = 1, int spriteNumber = 0);
   void drawMaze();
+  void drawMenu();
 
   static void framebuffer_size_callback(GLFWwindow *window, int width,
                                         int height);

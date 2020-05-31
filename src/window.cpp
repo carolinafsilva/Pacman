@@ -3,6 +3,7 @@
 GLFWwindow *Window::getWindow() { return this->window; }
 
 void Window::transferTextures() {
+  ResourceManager::LoadTexture("assets/images/menu.png", true, "menu");
   ResourceManager::LoadTexture("assets/images/maze.png", true, "maze");
   ResourceManager::LoadTexture("assets/images/pacman_walking_sheet.png", true,
                                "pacman");
@@ -66,6 +67,20 @@ void Window::drawMaze() {
   SheetRenderer->DrawSprite(myTexture, glm::vec2(0, 0),
                             glm::vec2((float)MAZE_WIDTH, (float)MAZE_HEIGHT),
                             0.0f, glm::vec3(1.0f, 1.0f, 1.0f), 1, 0);
+}
+
+void Window::drawMenu() {
+  Texture2D myTexture = ResourceManager::GetTexture("menu");
+  SheetRenderer->DrawSprite(myTexture, glm::vec2(0.0f, 0.0f),
+                            glm::vec2(MAZE_WIDTH, MAZE_HEIGHT));
+
+  Text->Load("assets/fonts/title.ttf", 24);
+  Text->RenderText("PACMAN", 50.0f, 30.0f, glm::vec2(1.0f, 1.0f),
+                   glm::vec3(1.0f, 1.0f, 0.0f));
+  Text->Load("assets/fonts/regular_text.ttf", 15);
+  Text->RenderText("Resume", 50.0f, 110.0f, glm::vec2(1.0f, 1.0f));
+  Text->RenderText("New Game", 50.0f, 150.0f, glm::vec2(1.0f, 1.0f));
+  Text->RenderText("Exit", 50.0f, 190.0f, glm::vec2(1.0f, 1.0f));
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
@@ -136,7 +151,6 @@ void Window::transferDataToGPUMemory() {
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   Text = new TextRenderer((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
-  Text->Load("assets/fonts/regular_text.ttf", 24);
 }
 
 void Window::render() {
@@ -258,8 +272,15 @@ void Window::render() {
   }
 
   glViewport(0, 264, SCREEN_WIDTH, 24);
+  Text->Load("assets/fonts/regular_text.ttf", 24);
   Text->RenderText("HIGH SCORE", 72.0f, 0.0f, glm::vec2(1.0 / 3, 3.0f));
   prettyPrintScore();
+
+  // verify is game is paused
+  if (false) {
+    glViewport(32, 48, 160, 200);
+    drawMenu();
+  }
 
   // swap the color buffer
   glfwSwapBuffers(window);
@@ -294,4 +315,5 @@ Window::Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts,
   this->score = score;
   this->pacmanSprite = 0;
   this->ghostSprite = 0;
+  this->proportion = SCREEN_WIDTH / SCREEN_HEIGHT;
 }
