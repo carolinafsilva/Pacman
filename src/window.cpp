@@ -4,26 +4,61 @@ GLFWwindow *Window::getWindow() { return this->window; }
 
 void Window::transferTextures() {
   ResourceManager::LoadTexture("assets/images/maze.png", true, "maze");
-  ResourceManager::LoadTexture("assets/images/Pacman_walking.gif", true,
+  ResourceManager::LoadTexture("assets/images/pacman_walking_sheet.png", true,
                                "pacman");
-  ResourceManager::LoadTexture("assets/images/Blinky_left.gif", true, "blinky");
-  ResourceManager::LoadTexture("assets/images/Pinky_left.gif", true, "pinky");
-  ResourceManager::LoadTexture("assets/images/Inky_left.gif", true, "inky");
-  ResourceManager::LoadTexture("assets/images/Clyde_left.gif", true, "clyde");
+  ResourceManager::LoadTexture("assets/images/Blinky_left.gif", true,
+                               "blinky_left");
+  ResourceManager::LoadTexture("assets/images/Pinky_left.gif", true,
+                               "pinky_left");
+  ResourceManager::LoadTexture("assets/images/Inky_left.gif", true,
+                               "inky_left");
+  ResourceManager::LoadTexture("assets/images/Clyde_left.gif", true,
+                               "clyde_left");
+  ResourceManager::LoadTexture("assets/images/Blinky_right.gif", true,
+                               "blinky_right");
+  ResourceManager::LoadTexture("assets/images/Pinky_right.gif", true,
+                               "pinky_right");
+  ResourceManager::LoadTexture("assets/images/Inky_right.gif", true,
+                               "inky_right");
+  ResourceManager::LoadTexture("assets/images/Clyde_right.gif", true,
+                               "clyde_right");
+  ResourceManager::LoadTexture("assets/images/Blinky_up.gif", true,
+                               "blinky_up");
+  ResourceManager::LoadTexture("assets/images/Pinky_up.gif", true, "pinky_up");
+  ResourceManager::LoadTexture("assets/images/Inky_up.gif", true, "inky_up");
+  ResourceManager::LoadTexture("assets/images/Clyde_up.gif", true, "clyde_up");
+  ResourceManager::LoadTexture("assets/images/Blinky_down.gif", true,
+                               "blinky_down");
+  ResourceManager::LoadTexture("assets/images/Pinky_down.gif", true,
+                               "pinky_down");
+  ResourceManager::LoadTexture("assets/images/Inky_down.gif", true,
+                               "inky_down");
+  ResourceManager::LoadTexture("assets/images/Clyde_down.gif", true,
+                               "clyde_down");
   ResourceManager::LoadTexture("assets/images/frightened.gif", true,
                                "frightened");
-  ResourceManager::LoadTexture("assets/images/eyes_left.png", true, "eyes");
+  ResourceManager::LoadTexture("assets/images/frightened_flash.png", true,
+                               "frightened_flash");
+  ResourceManager::LoadTexture("assets/images/eyes_left.png", true,
+                               "eyes_left");
+  ResourceManager::LoadTexture("assets/images/eyes_up.png", true, "eyes_up");
+  ResourceManager::LoadTexture("assets/images/eyes_down.png", true,
+                               "eyes_down");
+  ResourceManager::LoadTexture("assets/images/eyes_right.png", true,
+                               "eyes_right");
   ResourceManager::LoadTexture("assets/images/foody_food.png", true, "food");
   ResourceManager::LoadTexture("assets/images/energyzer.png", true,
                                "energyzer");
 }
 
-void Window::draw(std::string textureName, glm::vec3 position) {
+void Window::draw(std::string textureName, glm::vec3 position, float rotation,
+                  int totalSprites, int spriteNumber) {
   Texture2D myTexture = ResourceManager::GetTexture(textureName);
   glm::vec2 topLeft(position.x, position.y);
   float size = position.z;
-  SheetRenderer->DrawSprite(myTexture, topLeft, glm::vec2(size, size), 0.0f,
-                            glm::vec3(1.0f, 1.0f, 1.0f), 1, 0);
+  SheetRenderer->DrawSprite(myTexture, topLeft, glm::vec2(size, size), rotation,
+                            glm::vec3(1.0f, 1.0f, 1.0f), totalSprites,
+                            spriteNumber);
 }
 
 void Window::drawMaze() {
@@ -106,6 +141,13 @@ void Window::render() {
   int width, height;
   glfwGetFramebufferSize(window, &width, &height);
 
+  std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
+
+  long long milliseconds =
+      std::chrono::duration_cast<std::chrono::milliseconds>(now -
+                                                            this->lastTime)
+          .count();
+
   // Clean window
   glClear(GL_COLOR_BUFFER_BIT);
 
@@ -130,19 +172,68 @@ void Window::render() {
   }
 
   // Draw Pacman
+  float rotation;
   if (!this->pacman->isDead()) {
-    draw("pacman", this->pacman->getPosition());
+    switch (this->pacman->getOrientation()) {
+      case up:
+        rotation = 90.0f;
+        break;
+      case left:
+        rotation = 0.0f;
+        break;
+      case down:
+        rotation = -90.0f;
+        break;
+      case right:
+        rotation = 180.0f;
+        break;
+    }
+    draw("pacman", this->pacman->getPosition(), rotation, PACMAN_SHEET,
+         pacmanSprite);
     // Draw Ghosts
     for (int i = 0; i < 4; i++) {
+      std::string dir;
+      switch (this->ghosts[i]->getOrientation()) {
+        case up:
+          dir = "_up";
+          break;
+        case left:
+          dir = "_left";
+          break;
+        case down:
+          dir = "_down";
+          break;
+        case right:
+          dir = "_right";
+          break;
+      }
+
+      std::string sprite;
       if (this->ghosts[i]->isDead()) {
-        draw("eyes", this->ghosts[i]->getPosition());
+        sprite = "eyes";
+        draw(sprite.append(dir), this->ghosts[i]->getPosition());
       } else {
         if (Ghost::getMode() != frightened) {
-          draw(Ghost::getPersonality()[i], this->ghosts[i]->getPosition());
+          sprite = Ghost::getPersonality()[i];
+          draw(sprite.append(dir), this->ghosts[i]->getPosition());
         } else {
-          draw("frightened", this->ghosts[i]->getPosition());
+          long long frightened_time =
+              std::chrono::duration_cast<std::chrono::seconds>(
+                  now - *(this->lastEnergyzerTime))
+                  .count();
+          if (frightened_time >= TIME_UNTIL_FLASH) {
+            draw("frightened_flash", this->ghosts[i]->getPosition(), 0.0f,
+                 GHOST_SHEET, this->ghostSprite);
+          } else {
+            draw("frightened", this->ghosts[i]->getPosition());
+          }
         }
       }
+    }
+    if (milliseconds >= SPRITE_DURATION) {
+      this->pacmanSprite = (this->pacmanSprite + 1) % PACMAN_SHEET;
+      this->ghostSprite = (this->ghostSprite + 1) % GHOST_SHEET;
+      this->lastTime = now;
     }
   }
 
@@ -162,8 +253,14 @@ void Window::deleteDataFromGPUMemory() {
 
 void Window::terminate() { glfwTerminate(); }
 
-Window::Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts) {
+Window::Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts,
+               std::chrono::steady_clock::time_point startTime,
+               std::chrono::steady_clock::time_point *lastEnergyzerTime) {
   this->maze = maze;
   this->pacman = pacman;
   this->ghosts = ghosts;
+  this->lastTime = startTime;
+  this->lastEnergyzerTime = lastEnergyzerTime;
+  this->pacmanSprite = 0;
+  this->ghostSprite = 0;
 }
