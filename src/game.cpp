@@ -103,7 +103,7 @@ void Game::checkColision() {
     ghostBlock = this->maze->pixelToBlock(ghostCenter);
 
     if (ghostBlock.x == pacmanBlock.x && ghostBlock.y == pacmanBlock.y) {
-      if (Ghost::getMode() != frightened) {
+      if (Ghost::getMode() != frightened && !ghost->isDead()) {
         this->startTime = std::chrono::steady_clock::now();
         this->energyzerEaten = 0;
         this->modeTracker = 0;
