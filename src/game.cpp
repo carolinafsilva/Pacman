@@ -12,12 +12,12 @@ void Game::setMode(long long seconds, long long timer) {
 
 void Game::checkDuration(long long seconds) {
   // wave 1
-  if (seconds == 0 + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 0 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 0) {
     Ghost::setMode(scatter);
     this->modeTracker += 1;
   }
-  if (seconds == 7 + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 7 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 1) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -26,7 +26,7 @@ void Game::checkDuration(long long seconds) {
     this->modeTracker += 1;
   }
   // wave 2
-  if (seconds == 27 + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 27 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 2) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -34,7 +34,7 @@ void Game::checkDuration(long long seconds) {
     Ghost::setMode(scatter);
     this->modeTracker += 1;
   }
-  if (seconds == 34 + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 34 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 3) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -43,7 +43,7 @@ void Game::checkDuration(long long seconds) {
     this->modeTracker += 1;
   }
   // wave 3
-  if (seconds == 54 + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 54 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 4) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -51,7 +51,7 @@ void Game::checkDuration(long long seconds) {
     Ghost::setMode(scatter);
     this->modeTracker += 1;
   }
-  if (seconds == 59 + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 59 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 5) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -60,7 +60,7 @@ void Game::checkDuration(long long seconds) {
     this->modeTracker += 1;
   }
   // wave 4
-  if (seconds == 79 + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 79 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 6) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -68,7 +68,7 @@ void Game::checkDuration(long long seconds) {
     Ghost::setMode(scatter);
     this->modeTracker += 1;
   }
-  if (seconds == 84 + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 84 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 7) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -128,15 +128,28 @@ void Game::setup() {
 }
 
 void Game::run() {
-  // save starting time
-  this->startTime = std::chrono::steady_clock::now();
-  this->lastEnergyzerTime = std::chrono::steady_clock::now();
-
+  // Active state
   do {
     // get seconds since start
     long long seconds = std::chrono::duration_cast<std::chrono::seconds>(
                             std::chrono::steady_clock::now() - startTime)
                             .count();
+    // Start
+    while (seconds <= START_STATE) {
+      // set state
+      this->state = start;
+
+      // get seconds since start
+      seconds = std::chrono::duration_cast<std::chrono::seconds>(
+                    std::chrono::steady_clock::now() - startTime)
+                    .count();
+
+      // render window
+      this->window->render(this->state);
+    }
+
+    // set state
+    this->state = active;
 
     // process input
     processInput(this->window, pacman);
@@ -177,7 +190,7 @@ void Game::run() {
     this->setMode(seconds, timer);
 
     // render window
-    this->window->render();
+    this->window->render(this->state);
 
     // handle pacman death
     if (this->pacman->isDead()) {
@@ -191,14 +204,18 @@ void Game::run() {
       }
     }
 
-    // handle game over
-    if (this->maze->getDotsRemaining() == 0 || this->pacman->getLives() == 0) {
-      break;
-    }
+  } while (processExit(this->window) && !(this->maze->getDotsRemaining() == 0 ||
+                                          this->pacman->getLives() == 0));
+
+  // Over state
+  do {
+    // set state
+    this->state = over;
+
+    // render window
+    this->window->render(this->state);
 
   } while (processExit(this->window));
-
-  std::cout << "Game Over" << std::endl;
 }
 
 void Game::clean() {
@@ -223,13 +240,16 @@ Game::Game() {
       new Window(this->maze, this->pacman, this->ghosts, this->startTime,
                  &(this->lastEnergyzerTime), &(this->score));
 
-  this->modeTracker = 0;
+  this->state = start;
 
+  this->startTime = std::chrono::steady_clock::now();
+  this->lastEnergyzerTime = std::chrono::steady_clock::now();
+
+  this->modeTracker = 0;
   this->lastModeTracker = false;
 
   this->energyzerEaten = 0;
 
-  this->level = 1;
   this->score = 0;
 }
 

@@ -18,6 +18,8 @@
 
 #define ENERGYZER_TIME 5
 
+#define START_STATE 1
+
 class Game {
  private:
   // ---------------------------------------------------------------------------
@@ -29,18 +31,18 @@ class Game {
   Pacman *pacman;
   std::vector<Ghost *> ghosts;
 
+  state state;
+
   std::chrono::steady_clock::time_point startTime;
   std::chrono::steady_clock::time_point lastEnergyzerTime;
 
-  int score;
-  int level;
-
   int modeTracker;
-
   bool lastModeTracker;
   behaviour lastMode;
 
   int energyzerEaten;
+
+  int score;
 
   // ---------------------------------------------------------------------------
   // Methods
