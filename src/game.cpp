@@ -75,12 +75,12 @@ void Game::setMode(long long seconds, long long timer) {
 
 void Game::checkDuration(long long seconds) {
   // wave 1
-  if (seconds == 0 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 0 + 1 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 0) {
     Ghost::setMode(scatter);
     this->modeTracker += 1;
   }
-  if (seconds == 7 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 7 + 1 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 1) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -89,7 +89,7 @@ void Game::checkDuration(long long seconds) {
     this->modeTracker += 1;
   }
   // wave 2
-  if (seconds == 27 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 27 + 1 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 2) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -97,7 +97,7 @@ void Game::checkDuration(long long seconds) {
     Ghost::setMode(scatter);
     this->modeTracker += 1;
   }
-  if (seconds == 34 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 34 + 1 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 3) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -106,7 +106,7 @@ void Game::checkDuration(long long seconds) {
     this->modeTracker += 1;
   }
   // wave 3
-  if (seconds == 54 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 54 + 1 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 4) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -114,7 +114,7 @@ void Game::checkDuration(long long seconds) {
     Ghost::setMode(scatter);
     this->modeTracker += 1;
   }
-  if (seconds == 59 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 59 + 1 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 5) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -123,7 +123,7 @@ void Game::checkDuration(long long seconds) {
     this->modeTracker += 1;
   }
   // wave 4
-  if (seconds == 79 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 79 + 1 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 6) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
@@ -131,7 +131,7 @@ void Game::checkDuration(long long seconds) {
     Ghost::setMode(scatter);
     this->modeTracker += 1;
   }
-  if (seconds == 84 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
+  if (seconds == 84 + 1 + START_STATE + ENERGYZER_TIME * this->energyzerEaten &&
       this->modeTracker == 7) {
     for (Ghost *ghost : this->ghosts) {
       ghost->turnAround();
