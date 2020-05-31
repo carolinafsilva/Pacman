@@ -20,6 +20,7 @@ enum state { start, active, pause, over };
 
 #define MAZE_WIDTH 224
 #define MAZE_HEIGHT 248
+#define HEADER_HEIGHT 24
 
 #define PACMAN_SHEET 4
 #define GHOST_SHEET 4
@@ -37,8 +38,11 @@ class Window {
   SpriteSheetRenderer *SheetRenderer;
   unsigned int VBO, Maze_VAO, Pacman_VAO, EBO;
   int pacmanSprite, ghostSprite;
-  float proportion;
+  static float proportion;
+  static glm::vec2 mazeProportion;
+  static float headerProportion;
   int *score;
+  static int width, height;
 
   std::chrono::steady_clock::time_point lastTime;
   std::chrono::steady_clock::time_point *lastEnergyzerTime;

@@ -77,10 +77,10 @@ void Window::drawMenu() {
   Text->Load("assets/fonts/title.ttf", 24);
   Text->RenderText("PACMAN", 50.0f, 30.0f, glm::vec2(1.0f, 1.0f),
                    glm::vec3(1.0f, 1.0f, 0.0f));
-  Text->Load("assets/fonts/regular_text.ttf", 15);
-  Text->RenderText("Resume", 50.0f, 110.0f, glm::vec2(1.0f, 1.0f));
-  Text->RenderText("New Game", 50.0f, 150.0f, glm::vec2(1.0f, 1.0f));
-  Text->RenderText("Exit", 50.0f, 190.0f, glm::vec2(1.0f, 1.0f));
+  Text->Load("assets/fonts/regular_text.ttf", 24);
+  Text->RenderText("Resume", 50.0f, 110.0f, glm::vec2(0.625f, 0.8f));
+  Text->RenderText("New Game", 50.0f, 150.0f, glm::vec2(0.625f, 0.8f));
+  Text->RenderText("Exit", 50.0f, 190.0f, glm::vec2(0.625f, 0.8f));
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
@@ -91,7 +91,8 @@ void Window::framebuffer_size_callback(GLFWwindow *window, int width,
   // make sure the viewport matches the new window dimensions; note that width
   // and height will be significantly larger than specified on retina
   // displays.
-  glViewport(0, 0, width, height);
+  Window::width = width;
+  Window::height = height;
 }
 
 void Window::initialize() {
@@ -151,6 +152,7 @@ void Window::transferDataToGPUMemory() {
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   Text = new TextRenderer((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
+  Text->Load("assets/fonts/regular_text.ttf", 24);
 }
 
 void Window::render(state state) {
@@ -167,15 +169,21 @@ void Window::render(state state) {
 
   // Clean window
   glClear(GL_COLOR_BUFFER_BIT);
+  int maze_height = this->height * mazeProportion.y;
+  int header_height = this->height * headerProportion;
+  int lives_height = this->height - maze_height - header_height;
+  int new_width = this->height * proportion;
 
-  glViewport(0, 0, SCREEN_WIDTH, 16);
+  glViewport((this->width - new_width) / 2, 0, new_width, lives_height);
 
   // Draw lives
   for (int i = 0; i < this->pacman->getLives() - 1; i++) {
     draw("life", glm::vec2(16 * i, 0.0), glm::vec2(16, MAZE_HEIGHT - 4));
   }
 
-  glViewport(0, 16, SCREEN_WIDTH, 248);
+  glViewport((this->width - new_width) / 2, lives_height, new_width,
+             maze_height);
+
   // Draw Maze
   drawMaze();
 
@@ -271,14 +279,18 @@ void Window::render(state state) {
     }
   }
 
-  glViewport(0, 264, SCREEN_WIDTH, 24);
-  Text->Load("assets/fonts/regular_text.ttf", 24);
+  glViewport((this->width - new_width) / 2, lives_height + maze_height,
+             new_width, header_height);
   Text->RenderText("HIGH SCORE", 72.0f, 0.0f, glm::vec2(1.0 / 3, 3.0f));
   prettyPrintScore();
 
   // verify is game is paused
   if (false) {
-    glViewport(32, 48, 160, 200);
+    glViewport(32.0 / MAZE_WIDTH * new_width + (this->width - new_width) / 2,
+               lives_height + (32.0 / MAZE_HEIGHT * this->height),
+               new_width - 32.0 / MAZE_WIDTH * new_width * 2,
+               this->height - lives_height - header_height -
+                   (32.0 / MAZE_HEIGHT * this->height * 2));
     drawMenu();
   }
 
@@ -303,6 +315,12 @@ void Window::deleteDataFromGPUMemory() {
 
 void Window::terminate() { glfwTerminate(); }
 
+glm::vec2 Window::mazeProportion = glm::vec2(
+    (float)MAZE_WIDTH / SCREEN_WIDTH, (float)MAZE_HEIGHT / SCREEN_HEIGHT);
+float Window::headerProportion = (float)HEADER_HEIGHT / SCREEN_HEIGHT;
+float Window::proportion = (float)SCREEN_WIDTH / SCREEN_HEIGHT;
+int Window::width = SCREEN_WIDTH;
+int Window::height = SCREEN_HEIGHT;
 Window::Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts,
                std::chrono::steady_clock::time_point startTime,
                std::chrono::steady_clock::time_point *lastEnergyzerTime,
@@ -315,5 +333,4 @@ Window::Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts,
   this->score = score;
   this->pacmanSprite = 0;
   this->ghostSprite = 0;
-  this->proportion = SCREEN_WIDTH / SCREEN_HEIGHT;
 }
