@@ -5,6 +5,8 @@ GLFWwindow *Window::getWindow() { return this->window; }
 void Window::transferTextures() {
   ResourceManager::LoadTexture("assets/images/menu.png", true, "menu");
   ResourceManager::LoadTexture("assets/images/maze.png", true, "maze");
+  ResourceManager::LoadTexture("assets/images/maze_flash.png", true,
+                               "maze_flash");
   ResourceManager::LoadTexture("assets/images/pacman_walking_sheet.png", true,
                                "pacman");
   ResourceManager::LoadTexture("assets/images/Blinky_left.gif", true,
@@ -110,6 +112,16 @@ void Window::drawMaze() {
   SheetRenderer->DrawSprite(myTexture, glm::vec2(0, 0),
                             glm::vec2((float)MAZE_WIDTH, (float)MAZE_HEIGHT),
                             0.0f, glm::vec3(1.0f, 1.0f, 1.0f), 1, 0);
+}
+
+void Window::drawMazeWin() {
+  glViewport((this->width - this->new_width) / 2, this->lives_height,
+             this->new_width, this->maze_height);
+  Texture2D myTexture;
+  myTexture = ResourceManager::GetTexture("maze_flash");
+  SheetRenderer->DrawSprite(myTexture, glm::vec2(0, 0),
+                            glm::vec2((float)MAZE_WIDTH, (float)MAZE_HEIGHT),
+                            0.0f, glm::vec3(1.0f, 1.0f, 1.0f), 2, ghostSprite);
 }
 
 void Window::drawMenu() {
@@ -317,20 +329,23 @@ void Window::render(gameState state) {
   lives_height = this->height - this->maze_height - this->header_height;
   new_width = this->height * this->proportion;
 
-  drawLives();
-  drawHeader();
-  // Draw Maze
-  drawMaze();
-
-  // Draw Points
-  drawPoints();
+  if (state != win) {
+    // Draw lies remaining
+    drawLives();
+    // Draw header
+    drawHeader();
+    // Draw Maze
+    drawMaze();
+    // Draw Points
+    drawPoints();
+  }
 
   switch (state) {
     case start:
-      // TODO: text render "Ready!"
       Text->RenderText("Ready!", 84.0f, 158.0f, glm::vec2(0.4f, 0.50f),
                        this->highlightColor);
       drawPacmanStart();
+      drawGhosts();
       break;
     case active:
       if (!this->pacman->isDead()) {
@@ -355,6 +370,12 @@ void Window::render(gameState state) {
     case over:
       Text->RenderText("Game Over!", 76.0f, 158.0f, glm::vec2(0.3f, 0.50f),
                        this->highlightColor);
+      break;
+    case win:
+      drawMazeWin();
+      if (milliseconds >= SPRITE_DURATION) {
+        this->ghostSprite = (this->ghostSprite + 1) % 4;
+      }
       break;
   }
 

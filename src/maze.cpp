@@ -79,10 +79,6 @@ glm::vec2 Maze::getTunnelLeft() { return this->tunnelLeft; }
 
 glm::vec2 Maze::getTunnelRight() { return this->tunnelRight; };
 
-void Maze::movePacman(glm::vec3 position) {}
-
-void Maze::moveGhost(glm::vec3 position) {}
-
 Maze::Maze() {
   this->dotsRemaining = 244;
   this->tunnelLeft = glm::vec2(-16, 108);

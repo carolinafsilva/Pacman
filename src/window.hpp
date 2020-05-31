@@ -62,6 +62,7 @@ class Window {
   void drawHeader();
   void drawPoints();
   void drawMaze();
+  void drawMazeWin();
   void drawMenu();
   void drawPacmanStart();
   void drawPacmanAnimation();

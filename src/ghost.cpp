@@ -93,7 +93,7 @@ void Ghost::updateDirection() {
   if (this->mode != frightened || this->dead) {
     float min = INFINITY;
     for (int i = 0; i < 4; i++) {
-      if (distances[i] >= 0 && distances[i] - min <= 0.01f) {
+      if (distances[i] >= 0 && distances[i] - min < 0.01f) {
         min = distances[i];
         this->setOrientation((orientation)i);
       }
