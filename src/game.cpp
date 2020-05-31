@@ -7,8 +7,7 @@ void Game::processInput(Window *window, Pacman *pacman) {
   if (glfwGetKey(window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
     if (Game::state != pause) {
       Game::state = pause;
-    }
-    if (Game::state == pause) {
+    } else {
       Game::state = active;
     }
   }
@@ -159,6 +158,9 @@ void Game::setup() {
 
 void Game::run() {
   do {
+    // process input
+    processInput(this->window, pacman);
+
     if (Game::state != pause) {
       // get seconds since start
       long long seconds = std::chrono::duration_cast<std::chrono::seconds>(
@@ -180,9 +182,6 @@ void Game::run() {
 
       // set state
       Game::state = active;
-
-      // process input
-      processInput(this->window, pacman);
 
       // update positions
       this->pacman->updatePosition(1.0f);
