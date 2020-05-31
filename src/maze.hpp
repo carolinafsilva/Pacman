@@ -76,6 +76,7 @@ class Maze {
       {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1}};
 
+  int backup[BLOCK_L][BLOCK_C];
   int dotsRemaining;
   glm::vec2 tunnelLeft;
   glm::vec2 tunnelRight;
@@ -105,6 +106,8 @@ class Maze {
   glm::vec2 getTunnelLeft();
 
   glm::vec2 getTunnelRight();
+
+  void reset();
 
   Maze();
 };

@@ -58,6 +58,7 @@ class Game {
   void checkDuration(long long seconds);
   void checkEnergyzer(long long timer);
   void checkColision();
+  void resetGame();
 
  public:
   // ---------------------------------------------------------------------------

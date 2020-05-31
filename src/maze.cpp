@@ -79,8 +79,22 @@ glm::vec2 Maze::getTunnelLeft() { return this->tunnelLeft; }
 
 glm::vec2 Maze::getTunnelRight() { return this->tunnelRight; };
 
+void Maze::reset() {
+  this->dotsRemaining = 244;
+  for (int i = 0; i < BLOCK_L; i++) {
+    for (int j = 0; j < BLOCK_C; j++) {
+      this->matrix[i][j] = this->backup[i][j];
+    }
+  }
+}
+
 Maze::Maze() {
   this->dotsRemaining = 244;
   this->tunnelLeft = glm::vec2(-16, 108);
   this->tunnelRight = glm::vec2(224, 108);
+  for (int i = 0; i < BLOCK_L; i++) {
+    for (int j = 0; j < BLOCK_C; j++) {
+      this->backup[i][j] = this->matrix[i][j];
+    }
+  }
 }
