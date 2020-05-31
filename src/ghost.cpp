@@ -4,6 +4,10 @@
 // Protected methods
 
 void Ghost::move(float delta) {
+  // Slow down while frightened
+  if (Ghost::mode == frightened && !this->isDead()) {
+    delta = delta / 2;
+  }
   glm::vec3 nextPosition;
   switch (this->direction) {
     case up:
