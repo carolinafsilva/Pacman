@@ -128,7 +128,6 @@ void Game::setup() {
 }
 
 void Game::run() {
-  // Active state
   do {
     // get seconds since start
     long long seconds = std::chrono::duration_cast<std::chrono::seconds>(
@@ -207,7 +206,6 @@ void Game::run() {
   } while (processExit(this->window) && !(this->maze->getDotsRemaining() == 0 ||
                                           this->pacman->getLives() == 0));
 
-  // Over state
   do {
     // set state
     this->state = over;
