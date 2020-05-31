@@ -151,6 +151,7 @@ void Game::checkEnergyzer(long long timer) {
   } else if (this->lastModeTracker) {
     this->lastModeTracker = false;
     Ghost::setMode(this->lastMode);
+    this->ghostMultiplyer = 1;
   }
 }
 
@@ -172,7 +173,11 @@ void Game::checkColision() {
 
         this->pacman->setIsDead(true);
       } else {
-        ghost->setDead(true);
+        if (!ghost->isDead()) {
+          this->score += this->ghostMultiplyer * 200;
+          this->ghostMultiplyer += this->ghostMultiplyer;
+          ghost->setDead(true);
+        }
       }
     }
   }
@@ -329,6 +334,8 @@ Game::Game() {
 
   this->startTime = std::chrono::steady_clock::now();
   this->lastEnergyzerTime = std::chrono::steady_clock::now();
+
+  this->ghostMultiplyer = 1;
 
   this->modeTracker = 0;
   this->lastModeTracker = false;

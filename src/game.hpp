@@ -36,6 +36,8 @@ class Game {
   std::chrono::steady_clock::time_point startTime;
   std::chrono::steady_clock::time_point lastEnergyzerTime;
 
+  int ghostMultiplyer;
+
   int modeTracker;
   bool lastModeTracker;
   behaviour lastMode;
