@@ -49,14 +49,13 @@ void Window::transferTextures() {
   ResourceManager::LoadTexture("assets/images/foody_food.png", true, "food");
   ResourceManager::LoadTexture("assets/images/energyzer.png", true,
                                "energyzer");
+  ResourceManager::LoadTexture("assets/images/Pacman.png", true, "life");
 }
 
-void Window::draw(std::string textureName, glm::vec3 position, float rotation,
-                  int totalSprites, int spriteNumber) {
+void Window::draw(std::string textureName, glm::vec2 position, glm::vec2 size,
+                  float rotation, int totalSprites, int spriteNumber) {
   Texture2D myTexture = ResourceManager::GetTexture(textureName);
-  glm::vec2 topLeft(position.x, position.y);
-  float size = position.z;
-  SheetRenderer->DrawSprite(myTexture, topLeft, glm::vec2(size, size), rotation,
+  SheetRenderer->DrawSprite(myTexture, position, size, rotation,
                             glm::vec3(1.0f, 1.0f, 1.0f), totalSprites,
                             spriteNumber);
 }
@@ -64,10 +63,9 @@ void Window::draw(std::string textureName, glm::vec3 position, float rotation,
 void Window::drawMaze() {
   Texture2D myTexture;
   myTexture = ResourceManager::GetTexture("maze");
-  SheetRenderer->DrawSprite(
-      myTexture, glm::vec2(0, 0),
-      glm::vec2((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT), 0.0f,
-      glm::vec3(1.0f, 1.0f, 1.0f), 1, 0);
+  SheetRenderer->DrawSprite(myTexture, glm::vec2(0, 0),
+                            glm::vec2((float)MAZE_WIDTH, (float)MAZE_HEIGHT),
+                            0.0f, glm::vec3(1.0f, 1.0f, 1.0f), 1, 0);
 }
 
 // glfw: whenever the window size changed (by OS or user resize) this callback
@@ -121,8 +119,8 @@ void Window::transferDataToGPUMemory() {
                               nullptr, "sprite");
 
   // configure shaders
-  glm::mat4 projection = glm::ortho(0.0f, (float)(SCREEN_WIDTH),
-                                    (float)(SCREEN_HEIGHT), 0.0f, -1.0f, 1.0f);
+  glm::mat4 projection = glm::ortho(0.0f, (float)(MAZE_WIDTH),
+                                    (float)(MAZE_HEIGHT), 0.0f, -1.0f, 1.0f);
   ResourceManager::GetShader("sprite").Use().SetInteger("image", 0);
   ResourceManager::GetShader("sprite").SetMatrix4("projection", projection);
 
@@ -134,6 +132,11 @@ void Window::transferDataToGPUMemory() {
   // set up vertex data (and buffer(s)) and configure vertex attributes
   // ------------------------------------------------------------------
   transferTextures();
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  Text = new TextRenderer((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
+  Text->Load("assets/fonts/regular_text.ttf", 24);
 }
 
 void Window::render() {
@@ -151,6 +154,14 @@ void Window::render() {
   // Clean window
   glClear(GL_COLOR_BUFFER_BIT);
 
+  glViewport(0, 0, SCREEN_WIDTH, 16);
+
+  // Draw lives
+  for (int i = 0; i < this->pacman->getLives() - 1; i++) {
+    draw("life", glm::vec2(16 * i, 0.0), glm::vec2(16, MAZE_HEIGHT - 4));
+  }
+
+  glViewport(0, 16, SCREEN_WIDTH, 248);
   // Draw Maze
   drawMaze();
 
@@ -160,13 +171,15 @@ void Window::render() {
       glm::ivec2 block = glm::ivec2(i, j);
       if (this->maze->value(block) == 10) {
         glm::vec2 center = this->maze->blockToPixel(block);
-        glm::vec3 position = glm::vec3(center.x - 4, center.y - 4, 8);
-        draw("food", position);
+        glm::vec2 position = glm::vec2(center.x - 4, center.y - 4);
+        glm::vec2 size = glm::vec2(8, 8);
+        draw("food", position, size);
       }
       if (this->maze->value(block) == 50) {
         glm::vec2 center = this->maze->blockToPixel(block);
-        glm::vec3 position = glm::vec3(center.x - 4, center.y - 4, 8);
-        draw("energyzer", position);
+        glm::vec2 position = glm::vec2(center.x - 4, center.y - 4);
+        glm::vec2 size = glm::vec2(8, 8);
+        draw("energyzer", position, size);
       }
     }
   }
@@ -188,8 +201,11 @@ void Window::render() {
         rotation = 180.0f;
         break;
     }
-    draw("pacman", this->pacman->getPosition(), rotation, PACMAN_SHEET,
-         pacmanSprite);
+    glm::vec2 position =
+        glm::vec2(this->pacman->getPosition().x, this->pacman->getPosition().y);
+    glm::vec2 size =
+        glm::vec2(this->pacman->getPosition().z, this->pacman->getPosition().z);
+    draw("pacman", position, size, rotation, PACMAN_SHEET, pacmanSprite);
     // Draw Ghosts
     for (int i = 0; i < 4; i++) {
       std::string dir;
@@ -209,23 +225,27 @@ void Window::render() {
       }
 
       std::string sprite;
+      glm::vec2 position = glm::vec2(this->ghosts[i]->getPosition().x,
+                                     this->ghosts[i]->getPosition().y);
+      glm::vec2 size = glm::vec2(this->ghosts[i]->getPosition().z,
+                                 this->ghosts[i]->getPosition().z);
       if (this->ghosts[i]->isDead()) {
         sprite = "eyes";
-        draw(sprite.append(dir), this->ghosts[i]->getPosition());
+        draw(sprite.append(dir), position, size);
       } else {
         if (Ghost::getMode() != frightened) {
           sprite = Ghost::getPersonality()[i];
-          draw(sprite.append(dir), this->ghosts[i]->getPosition());
+          draw(sprite.append(dir), position, size);
         } else {
           long long frightened_time =
               std::chrono::duration_cast<std::chrono::seconds>(
                   now - *(this->lastEnergyzerTime))
                   .count();
           if (frightened_time >= TIME_UNTIL_FLASH) {
-            draw("frightened_flash", this->ghosts[i]->getPosition(), 0.0f,
-                 GHOST_SHEET, this->ghostSprite);
+            draw("frightened_flash", position, size, 0.0f, GHOST_SHEET,
+                 this->ghostSprite);
           } else {
-            draw("frightened", this->ghosts[i]->getPosition());
+            draw("frightened", position, size);
           }
         }
       }
@@ -237,9 +257,18 @@ void Window::render() {
     }
   }
 
+  glViewport(0, 264, SCREEN_WIDTH, 24);
+  Text->RenderText("HIGH SCORE", 72.0f, 0.0f, glm::vec2(1.0 / 3, 3.0f));
+  prettyPrintScore();
+
   // swap the color buffer
   glfwSwapBuffers(window);
   glfwPollEvents();
+}
+
+void Window::prettyPrintScore() {
+  std::string score = std::to_string(*(this->score));
+  Text->RenderText(score, 0.0f, 82.0f, glm::vec2(1.0 / 3, 3.0f));
 }
 
 void Window::deleteDataFromGPUMemory() {
@@ -255,12 +284,14 @@ void Window::terminate() { glfwTerminate(); }
 
 Window::Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts,
                std::chrono::steady_clock::time_point startTime,
-               std::chrono::steady_clock::time_point *lastEnergyzerTime) {
+               std::chrono::steady_clock::time_point *lastEnergyzerTime,
+               int *score) {
   this->maze = maze;
   this->pacman = pacman;
   this->ghosts = ghosts;
   this->lastTime = startTime;
   this->lastEnergyzerTime = lastEnergyzerTime;
+  this->score = score;
   this->pacmanSprite = 0;
   this->ghostSprite = 0;
 }

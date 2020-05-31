@@ -7,13 +7,17 @@
 #include "pacman.hpp"
 #include "ghost.hpp"
 #include "resource_manager.hpp"
+#include "text_renderer.hpp"
 #include "sprite_sheet_renderer.hpp"
 
 #include <vector>
 #include <iostream>
 
 #define SCREEN_WIDTH 224
-#define SCREEN_HEIGHT 248
+#define SCREEN_HEIGHT 288
+
+#define MAZE_WIDTH 224
+#define MAZE_HEIGHT 248
 
 #define PACMAN_SHEET 4
 #define GHOST_SHEET 4
@@ -27,21 +31,24 @@ class Window {
   Pacman *pacman;
   Maze *maze;
   std::vector<Ghost *> ghosts;
+  TextRenderer *Text;
   SpriteSheetRenderer *SheetRenderer;
   unsigned int VBO, Maze_VAO, Pacman_VAO, EBO;
   int pacmanSprite, ghostSprite;
+  int *score;
 
   std::chrono::steady_clock::time_point lastTime;
   std::chrono::steady_clock::time_point *lastEnergyzerTime;
 
   void transferTextures();
 
-  void draw(std::string textureName, glm::vec3 position, float rotation = 0.0f,
-            int totalSprites = 1, int spriteNumber = 0);
+  void draw(std::string textureName, glm::vec2 position, glm::vec2 size,
+            float rotation = 0.0f, int totalSprites = 1, int spriteNumber = 0);
   void drawMaze();
 
   static void framebuffer_size_callback(GLFWwindow *window, int width,
                                         int height);
+  void prettyPrintScore();
 
  public:
   GLFWwindow *getWindow();
@@ -54,7 +61,7 @@ class Window {
 
   Window(Maze *maze, Pacman *pacman, std::vector<Ghost *> &ghosts,
          std::chrono::steady_clock::time_point startTime,
-         std::chrono::steady_clock::time_point *lastEnergyzerTime);
+         std::chrono::steady_clock::time_point *lastEnergyzerTime, int *score);
 };
 
 #endif

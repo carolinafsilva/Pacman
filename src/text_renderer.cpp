@@ -88,8 +88,8 @@ void TextRenderer::Load(std::string font, unsigned int fontSize) {
   FT_Done_FreeType(ft);
 }
 
-void TextRenderer::RenderText(std::string text, float x, float y, float scale,
-                              glm::vec3 color) {
+void TextRenderer::RenderText(std::string text, float x, float y,
+                              glm::vec2 scale, glm::vec3 color) {
   // activate corresponding render state
   this->TextShader.Use();
   this->TextShader.SetVector3f("textColor", color);
@@ -101,11 +101,11 @@ void TextRenderer::RenderText(std::string text, float x, float y, float scale,
   for (c = text.begin(); c != text.end(); c++) {
     Character ch = Characters[*c];
 
-    float xpos = x + ch.Bearing.x * scale;
-    float ypos = y + (this->Characters['H'].Bearing.y - ch.Bearing.y) * scale;
+    float xpos = x + ch.Bearing.x * scale.x;
+    float ypos = y + (this->Characters['H'].Bearing.y - ch.Bearing.y) * scale.y;
 
-    float w = ch.Size.x * scale;
-    float h = ch.Size.y * scale;
+    float w = ch.Size.x * scale.x;
+    float h = ch.Size.y * scale.y;
     // update VBO for each character
     float vertices[6][4] = {
         {xpos, ypos + h, 0.0f, 1.0f}, {xpos + w, ypos, 1.0f, 0.0f},
@@ -124,8 +124,10 @@ void TextRenderer::RenderText(std::string text, float x, float y, float scale,
     // render quad
     glDrawArrays(GL_TRIANGLES, 0, 6);
     // now advance cursors for next glyph
-    x += (ch.Advance >> 6) *
-         scale;  // bitshift by 6 to get value in pixels (1/64th times 2^6 = 64)
+    x +=
+        (ch.Advance >> 6) *
+        scale
+            .x;  // bitshift by 6 to get value in pixels (1/64th times 2^6 = 64)
   }
   glBindVertexArray(0);
   glBindTexture(GL_TEXTURE_2D, 0);

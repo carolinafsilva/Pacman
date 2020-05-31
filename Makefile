@@ -3,7 +3,7 @@
 CC := clang
 
 CFLAGS := -std=c++11 -O0 -g -I/usr/local/Cellar/freetype/2.10.1/include/freetype2
-LIBS := -lfreetype -lstdc++ -lm -lglfw -lglew -framework OpenGL
+LIBS := -lstdc++ -lm -lfreetype -lglfw -lglew -framework OpenGL
 
 SRCS := $(filter-out src/main.cpp, $(wildcard src/*.cpp))
 OBJS := $(SRCS:src/%.cpp=build/%.o)
