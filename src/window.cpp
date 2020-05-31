@@ -139,7 +139,7 @@ void Window::transferDataToGPUMemory() {
   Text->Load("assets/fonts/regular_text.ttf", 24);
 }
 
-void Window::render() {
+void Window::render(state state) {
   // MacOS retina screen fix
   int width, height;
   glfwGetFramebufferSize(window, &width, &height);

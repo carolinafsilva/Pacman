@@ -13,6 +13,8 @@
 #include <vector>
 #include <iostream>
 
+enum state { start, active, pause, over };
+
 #define SCREEN_WIDTH 224
 #define SCREEN_HEIGHT 288
 
@@ -55,7 +57,7 @@ class Window {
 
   void initialize();
   void transferDataToGPUMemory();
-  void render();
+  void render(state state);
   void deleteDataFromGPUMemory();
   void terminate();
 
