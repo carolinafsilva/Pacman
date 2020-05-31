@@ -153,7 +153,7 @@ void Window::transferDataToGPUMemory() {
   Text = new TextRenderer((float)SCREEN_WIDTH, (float)SCREEN_HEIGHT);
 }
 
-void Window::render(state state) {
+void Window::render(gameState state) {
   // MacOS retina screen fix
   int width, height;
   glfwGetFramebufferSize(window, &width, &height);
