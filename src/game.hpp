@@ -46,6 +46,9 @@ class Game {
 
   // ---------------------------------------------------------------------------
   // Methods
+  static void handleKeyboardInput(GLFWwindow *window, int key, int scancode,
+                                  int action, int mods);
+
   void processInput(Window *window, Pacman *pacman);
   bool processExit(Window *window);
 

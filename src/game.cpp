@@ -4,14 +4,6 @@
 // Private methods
 
 void Game::processInput(Window *window, Pacman *pacman) {
-  if (glfwGetKey(window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-    if (Game::state != pause) {
-      Game::state = pause;
-    } else {
-      Game::state = active;
-    }
-  }
-
   if (Game::state == active) {
     if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS ||
         glfwGetKey(window->getWindow(), GLFW_KEY_UP) == GLFW_PRESS) {
@@ -39,6 +31,17 @@ void Game::processInput(Window *window, Pacman *pacman) {
     if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS ||
         glfwGetKey(window->getWindow(), GLFW_KEY_DOWN) == GLFW_PRESS) {
       // Select menu item down
+    }
+  }
+}
+
+void Game::handleKeyboardInput(GLFWwindow *window, int key, int scancode,
+                               int action, int mods) {
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+    if (Game::state != pause) {
+      Game::state = pause;
+    } else {
+      Game::state = active;
     }
   }
 }
@@ -140,10 +143,10 @@ void Game::checkColision() {
   for (Ghost *ghost : ghosts) {
     ghostCenter = this->maze->getCenter(ghost->getPosition());
 
-    if (ghostCenter.x == pacmanCenter.x &&
-            fabs(ghostCenter.y - pacmanCenter.y) <= 8.0f ||
-        ghostCenter.y == pacmanCenter.y &&
-            fabs(ghostCenter.x - pacmanCenter.x) <= 8.0f) {
+    if ((ghostCenter.x == pacmanCenter.x &&
+         fabs(ghostCenter.y - pacmanCenter.y) <= 8.0f) ||
+        (ghostCenter.y == pacmanCenter.y &&
+         fabs(ghostCenter.x - pacmanCenter.x) <= 8.0f)) {
       if (Ghost::getMode() != frightened && !ghost->isDead()) {
         this->startTime = std::chrono::steady_clock::now();
         this->energyzerEaten = 0;
@@ -166,6 +169,8 @@ void Game::setup() {
   // initialize window
   this->window->initialize();
   this->window->transferDataToGPUMemory();
+  // Set key callback
+  glfwSetKeyCallback(this->window->getWindow(), handleKeyboardInput);
 }
 
 void Game::run() {
