@@ -106,10 +106,6 @@ class Maze {
 
   glm::vec2 getTunnelRight();
 
-  void movePacman(glm::vec3 position);
-
-  void moveGhost(glm::vec3 position);
-
   Maze();
 };
 
