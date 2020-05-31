@@ -2,7 +2,8 @@
 
 void processInput(Window *window, Pacman *pacman) {
   if (glfwGetKey(window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-    glfwSetWindowShouldClose(window->getWindow(), true);
+    // glfwSetWindowShouldClose(window->getWindow(), true);
+    // TODO: set game state to paused
   }
   if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS ||
       glfwGetKey(window->getWindow(), GLFW_KEY_UP) == GLFW_PRESS) {
