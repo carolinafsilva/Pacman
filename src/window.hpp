@@ -24,6 +24,8 @@ enum gameState { start, active, pause, over, win };
 
 #define PACMAN_SHEET 4
 #define GHOST_SHEET 4
+
+#define MAZE_DURATION 500
 #define SPRITE_DURATION 50
 #define TIME_UNTIL_FLASH 3
 

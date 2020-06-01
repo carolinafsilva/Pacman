@@ -373,8 +373,9 @@ void Window::render(gameState state) {
       break;
     case win:
       drawMazeWin();
-      if (milliseconds >= SPRITE_DURATION) {
+      if (milliseconds >= MAZE_DURATION) {
         this->ghostSprite = (this->ghostSprite + 1) % 4;
+        this->lastTime = now;
       }
       break;
   }
